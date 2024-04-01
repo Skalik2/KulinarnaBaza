@@ -1,0 +1,21 @@
+docker run -p 5000:5000 -d --name bazy projekt-bazy
+docker run -d --name projekt-bazy projekt-bazy-img
+docker build -t projekt-bazy .
+
+docker run -v ${pwd}:/app:ro -p 5000:5000 -d --name bazy projekt-bazy-image
+
+docker run -v ${pwd}:/app:ro -v /app/node_modules --env-file ./.env -p 5000:5000 -d --name bazy projekt-bazy-image
+
+docker exec -it bazy bash
+
+docker volume prume
+
+docker-compose up -d / --build
+
+docker-compose down -v
+
+docker rm bazy -fv (force + volume)
+
+linux $(pwd)
+powershell %{pwd}
+windows %cd%
