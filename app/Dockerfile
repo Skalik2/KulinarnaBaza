@@ -1,9 +1,8 @@
-FROM node:15
+FROM node:latest
 WORKDIR /app
 COPY package.json .
-RUN npm install && npm install typescript -g
+RUN npm install
 COPY . .
 ENV PORT 3000
 EXPOSE ${PORT}
-RUN tsc
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "dev" ]`

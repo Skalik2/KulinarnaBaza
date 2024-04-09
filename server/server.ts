@@ -1,6 +1,9 @@
 import express, { Express, Request, Response } from "express";
+import cors from "cors";
 
 const app: Express = express();
+
+app.use(cors());
 
 app.get("/api",(req: Request, res: Response) =>{
 
