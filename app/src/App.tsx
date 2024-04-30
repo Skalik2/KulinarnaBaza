@@ -10,6 +10,10 @@ import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PageNotFound from "./pages/PageNotFound";
+import Recipes from "./pages/Recipes";
+import Articles from "./pages/Articles";
+import MealPlanner from "./pages/MealPlanner";
+import Rank from "./pages/Rank";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,6 +46,10 @@ function App() {
                 <Route index element={<HomePage />} />
                 <Route path="login" element={<Login />} />
                 <Route path="signup" element={<Register />} />
+                <Route path="recipes" element={<Recipes />} />
+                <Route path="articles" element={<Articles />} />
+                <Route path="planner" element={<MealPlanner />} />
+                <Route path="rank" element={<Rank />} />
                 <Route path="*" element={<PageNotFound />} />
               </Route>
             </Routes>

@@ -37,17 +37,17 @@ export default function MobileNav({
     },
   };
 
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+  // useEffect(() => {
+  //   if (open) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "auto";
+  //   }
 
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [open, portalContainer]);
+  //   return () => {
+  //     document.body.style.overflow = "auto";
+  //   };
+  // }, [open, portalContainer]);
 
   if (!portalContainer) {
     return null;
@@ -56,65 +56,70 @@ export default function MobileNav({
   return (
     <>
       {createPortal(
-        <motion.div
-          animate={open ? "open" : "hidden"}
-          initial="hidden"
-          variants={variants}
-          transition={{ ease: "easeInOut", duration: 0.5 }}
-          className="absolute  top-0 right-0 pt-16 w-full h-full grid grid-cols-[1fr,280px]"
-        >
-          <div className=" h-full " onClick={() => setOpen(false)}></div>
-          <div className="h-full pt-10 flex flex-col justify-start items-center gap-5 bg-bgWhite dark:bg-bgDark shadow-2xl ">
-            {userAuth ? (
-              <>
+        <>
+          <div
+            className=" fixed  top-0 right-0 pt-16 w-full h-full lg:hidden "
+            onClick={() => setOpen(false)}
+          ></div>
+          <motion.div
+            animate={open ? "open" : "hidden"}
+            initial="hidden"
+            variants={variants}
+            transition={{ ease: "easeInOut", duration: 0.4 }}
+            className="fixed  top-0 right-0 pt-16 w-[280px] h-full lg:hidden"
+          >
+            <div className="h-full pt-10 flex flex-col justify-start items-center gap-5 bg-bgWhite dark:bg-bgDark shadow-2xl ">
+              {userAuth ? (
+                <>
+                  <MobileNavItem
+                    icon={<FaRegUser />}
+                    link="account"
+                    onOpen={setOpen}
+                    title="Konto"
+                  />
+                  <MobileNavItem
+                    icon={<FaPen />}
+                    link="my-recipes"
+                    onOpen={setOpen}
+                    title="Moje Przepisy"
+                  />
+                  <MobileNavItem
+                    icon={<MdFavoriteBorder />}
+                    link="favorite"
+                    onOpen={setOpen}
+                    title="Ulubione"
+                  />
+                  <div className="w-5/6 h-[1px] bg-bgWhiteHover dark:bg-bgDarkHover"></div>
+                </>
+              ) : (
+                <>
+                  <MobileNavItem
+                    icon={<RiUserAddLine />}
+                    link="signup"
+                    onOpen={setOpen}
+                    title="Zarejestruj"
+                    highlight
+                  />
+                  <MobileNavItem
+                    icon={<CiLogin />}
+                    link="login"
+                    onOpen={setOpen}
+                    title="Zaloguj"
+                  />
+                  <div className="w-5/6 h-[1px] bg-bgWhiteHover dark:bg-bgDarkHover"></div>
+                </>
+              )}
+              {navigationOptions.map((item) => (
                 <MobileNavItem
-                  icon={<FaRegUser />}
-                  link="account"
+                  link={item.link}
+                  title={item.title}
                   onOpen={setOpen}
-                  title="Konto"
+                  icon={item.icon}
                 />
-                <MobileNavItem
-                  icon={<FaPen />}
-                  link="my-recipes"
-                  onOpen={setOpen}
-                  title="Moje Przepisy"
-                />
-                <MobileNavItem
-                  icon={<MdFavoriteBorder />}
-                  link="favorite"
-                  onOpen={setOpen}
-                  title="Ulubione"
-                />
-                <div className="w-5/6 h-[1px] bg-bgWhiteHover dark:bg-bgDarkHover"></div>
-              </>
-            ) : (
-              <>
-                <MobileNavItem
-                  icon={<RiUserAddLine />}
-                  link="signup"
-                  onOpen={setOpen}
-                  title="Zarejestruj"
-                  highlight
-                />
-                <MobileNavItem
-                  icon={<CiLogin />}
-                  link="login"
-                  onOpen={setOpen}
-                  title="Zaloguj"
-                />
-                <div className="w-5/6 h-[1px] bg-bgWhiteHover dark:bg-bgDarkHover"></div>
-              </>
-            )}
-            {navigationOptions.map((item) => (
-              <MobileNavItem
-                link={item.link}
-                title={item.title}
-                onOpen={setOpen}
-                icon={item.icon}
-              />
-            ))}
-          </div>
-        </motion.div>,
+              ))}
+            </div>
+          </motion.div>
+        </>,
         portalContainer
       )}
     </>

@@ -9,7 +9,7 @@ interface BurgerButtonProps {
 export default function BurgerButton({ setOpen, open }: BurgerButtonProps) {
   return (
     <button
-      className="relative h-[25.5px] w-8 outline-none group p-2"
+      className="relative h-[25.5px] w-8 outline-none group p-2 lg:hidden block"
       onClick={() => setOpen((s) => !s)}
     >
       <motion.div
