@@ -67,7 +67,7 @@ export default function FormInput({
         className="border-none focus:outline-none px-3 py-2 w-full bg-bgWhite dark:bg-bgDark  dark:text-bgWhite text-bgDark"
         type={type}
         {...register(id, {
-          required: "This field is required",
+          required: "Wypełnij to pole",
           validate: validateFunction,
           onChange: (e) => changeValue(e.target.value),
           onBlur: () => setFocus(false),

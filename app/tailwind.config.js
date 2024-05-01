@@ -22,6 +22,10 @@ export default {
         md750: "750px",
         md800: "800px",
       },
+      backgroundImage: {
+        cockingBgDark: "url('/cockingbg-dark.png')",
+        cockingBgWhite: "url('/cockingbg-white.png')",
+      },
     },
   },
   plugins: [],

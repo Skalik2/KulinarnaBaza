@@ -1,6 +1,8 @@
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import FormInput from "../ui/FormInput";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { DarkModeContext } from "../context/DarkModeContext";
 
 export default function Register() {
   const {
@@ -9,6 +11,7 @@ export default function Register() {
     getValues,
     formState: { errors },
   } = useForm<FieldValues>();
+  const { isDarkMode } = useContext(DarkModeContext);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data);
@@ -21,7 +24,7 @@ export default function Register() {
           <div className="flex flex-col justify-center items-center  h-full  w-full xl:w-1/2 ">
             <div className="flex flex-col justify-center items-center mb-7">
               <h3 className="font-semibold text-2xl xs:text-3xl text-bgDark dark:text-bgWhite">
-                Create account!
+                Stwórz konto!
               </h3>
             </div>
             <form
@@ -32,7 +35,7 @@ export default function Register() {
                 <FormInput
                   id="name"
                   type="text"
-                  label="Name"
+                  label="Imię"
                   error={errors?.name?.message}
                   register={register}
                 />
@@ -41,7 +44,7 @@ export default function Register() {
                 <FormInput
                   id="surname"
                   type="text"
-                  label="Surname"
+                  label="Nazwisko"
                   error={errors?.surname?.message}
                   register={register}
                 />
@@ -56,7 +59,7 @@ export default function Register() {
                   validateFunction={() => {
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     if (!emailRegex.test(getValues().email))
-                      return "Incorrect e-mail";
+                      return "Niepoprawny e-mail";
                     else return true;
                   }}
                 />
@@ -65,13 +68,13 @@ export default function Register() {
                 <FormInput
                   id="password"
                   type="password"
-                  label="Password"
+                  label="Hasło"
                   error={errors?.password?.message}
                   register={register}
                   validateFunction={() => {
                     const passwordRegex = /^.{8,}$/;
                     if (!passwordRegex.test(getValues().password))
-                      return "Incorrect password (min. 8 letters)";
+                      return "Niepoprawne hasło (min. 8 znaków)";
                     else return true;
                   }}
                 />
@@ -81,36 +84,39 @@ export default function Register() {
                 <FormInput
                   id="passwordRep"
                   type="password"
-                  label="Repeat Password"
+                  label="Powtórz hasło"
                   error={errors?.passwordRep?.message}
                   register={register}
                   validateFunction={() => {
                     if (getValues().password !== getValues().passwordRep)
-                      return "Passwords don't match";
+                      return "Hasła nie są takie same";
                     else return true;
                   }}
                 />
               </div>
               <button className="w-full bg-main hover:bg-mainHover py-2 text-white uppercase tracking-widest font-light rounded-full transition-all duration-300">
-                submit
+                Zarejestruj
               </button>
             </form>
             <p className="text-sm mt-4 text-bgDark dark:text-bgWhite">
-              Already a member?
+              Masz już konto?
               <br className="xs:hidden" />
               <span className="xs:ml-2">
                 <Link
                   to="/login"
                   className="hover:text-mainHover dark:hover:text-mainHover text-main transition-colors duration-300"
                 >
-                  Sign In
+                  Zaloguj
                 </Link>
               </span>
             </p>
           </div>
           <div className="hidden xl:block w-1/2 h-full ">
-            {/* <PageCanvas /> */}
-            <p>dupa</p>
+            {isDarkMode ? (
+              <div className="bg-cockingBgDark w-full h-full bg-cover bg-center" />
+            ) : (
+              <div className="bg-cockingBgWhite w-full h-full bg-cover bg-center" />
+            )}
           </div>
         </div>
       </div>

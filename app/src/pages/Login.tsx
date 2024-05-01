@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import FormInput from "../ui/FormInput";
 import { Link } from "react-router-dom";
+import { DarkModeContext } from "../context/DarkModeContext";
 
 export default function Login() {
   const {
@@ -9,6 +10,7 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm<FieldValues>();
+  const { isDarkMode } = useContext(DarkModeContext);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data);
@@ -20,9 +22,9 @@ export default function Login() {
           <div className="flex flex-col justify-center items-center  h-full w-full xl:w-1/2 ">
             <div className="flex flex-col justify-center items-center gap-4 mb-10 dark:text-bgWhite text-bgDark">
               <h3 className="font-semibold text-3xl sm:text-4xl">
-                Wanna cook?
+                Zacznij gotować!
               </h3>
-              <p className="text-lg">Login to your account</p>
+              <p className="text-lg">Zaloguj się na swoje konto</p>
             </div>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -41,31 +43,34 @@ export default function Login() {
                 <FormInput
                   id="password"
                   type="password"
-                  label="Password"
+                  label="Hasło"
                   error={errors?.password?.message}
                   register={register}
                 />
               </div>
               <button className="w-full bg-main hover:bg-mainHover py-2 text-white uppercase tracking-widest font-light rounded-full transition-all duration-300">
-                submit
+                Zaloguj
               </button>
             </form>
             <p className="text-sm mt-4 text-bgDark dark:text-bgWhite">
-              Don&apos;t have an account yet?
+              Nie masz jeszcze konta?
               <br className="xs:hidden" />
               <span className="xs:ml-2">
                 <Link
                   to="/signup"
                   className="hover:text-mainHover dark:hover:text-mainHover text-main transition-colors duration-300"
                 >
-                  Sign Up
+                  Zarejestruj
                 </Link>
               </span>
             </p>
           </div>
           <div className="hidden xl:block w-1/2 h-full ">
-            {/* <PageCanvas /> */}
-            <p>dupa</p>
+            {isDarkMode ? (
+              <div className="bg-cockingBgDark w-full h-full bg-cover bg-center" />
+            ) : (
+              <div className="bg-cockingBgWhite w-full h-full bg-cover bg-center" />
+            )}
           </div>
         </div>
       </div>
