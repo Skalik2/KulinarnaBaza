@@ -28,6 +28,30 @@ app.post("/api/insertTag", async (req: Request, res: Response) =>{
         }
 })
 
+app.get("/api/getTag/:id", async (req: Request, res: Response) =>{
+
+        try {
+                const { id } = req.params;
+                const tag = await pool.query(
+                        "SELECT nazwa FROM tag WHERE id = $1",
+                        [id]
+                );
+                res.json(tag.rows[0]);
+        } catch (err: any) {
+                console.error(err.message);
+        }
+})
+
+app.get("/api/getAllTags", async (req: Request, res: Response) =>{
+
+        try {
+                const allTags = await pool.query("SELECT nazwa FROM tag");
+                res.json(allTags.rows);
+        } catch (err: any) {
+                console.error(err.message);
+        }
+})
+
 app.get("/hello",(req: Request, res: Response) =>{
 
         res.send("Hello moto!");
