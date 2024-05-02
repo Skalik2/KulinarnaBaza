@@ -7,13 +7,15 @@ const app: Express = express();
 app.use(cors());
 app.use(express.json());
 
+require('./auth')(app);
+
 app.get("/api",(req: Request, res: Response) =>{
 
         res.json({"testServera": ["dziala", "nie dziala", "może dziala"]});
 
 })
 
-app.post("/api/insertTag", async (req: Request, res: Response) =>{
+/*app.post("/api/insertTag", async (req: Request, res: Response) =>{
 
         try {
                 const { tagName } = req.body;
@@ -23,6 +25,19 @@ app.post("/api/insertTag", async (req: Request, res: Response) =>{
                 );
                 res.json(newTag);
                 console.log(tagName);
+        } catch (err: any) {
+                console.error(err.message);
+        }
+})*/
+
+app.get("/api/getUsers", async (req: Request, res: Response) =>{
+
+        try {
+                const newTag = await pool.query(
+                    "SELECT * FROM public.uzytkownik"
+                );
+                res.json(newTag.rows[0].imie);
+                console.log(newTag.rows[0].imie);
         } catch (err: any) {
                 console.error(err.message);
         }
