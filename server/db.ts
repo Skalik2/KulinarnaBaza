@@ -6,7 +6,7 @@ const pool = new Pool({
     password: process.env.PGPASSWORD,
     host: "localhost",
     port: 5432,
-    database: "FoodKeeper"
+    database: process.env.PGDBNAME
 });
 
 module.exports = pool;
