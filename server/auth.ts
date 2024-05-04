@@ -36,6 +36,7 @@ module.exports = function(app : Express) {
                 return;
             }
             else if (!comparePasswords(password, result.rows[0].haslo)) {
+                console.log(password, result.rows[0].haslo);
                 console.error("Incorrect password!");
                 res.status(500).json({ error: "Incorrect email and password combination!" });
                 return;
@@ -52,6 +53,32 @@ module.exports = function(app : Express) {
             res.status(500).json({ error: "Error when logging in!" });
         }
     });
+
+
+    app.get("/api/checkSession", bodyParser.json(), async(req : any, res) => {
+        try {
+            if (req.session == null || req.session.user == null || req.session.authenticated == false) {
+                res.status(401).json({ response: "User session is not valid!" });
+            }
+            else {
+
+                const result = await pool.query(
+                    "SELECT id_uzytkownika FROM public.uzytkownik WHERE email = $1",
+                    [req.session.user]
+                );
+                if (result.rowCount == 1){
+                    res.status(200).json( { response: "Session is valid!"} );
+                }
+                else {
+                    res.status(401).json({ response: "User session is not valid!" });
+                }
+            }
+        }
+        catch (err) {
+            console.error("Error when checking session:", err);
+            res.status(500).json({ error: "Error when checking session!" });
+        }
+    })
 
     app.get("/api/logout", bodyParser.json(), async(req : any, res) => {
         try {
