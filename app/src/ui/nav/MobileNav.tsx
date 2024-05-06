@@ -57,10 +57,14 @@ export default function MobileNav({
     <>
       {createPortal(
         <>
-          <div
+          <motion.div
+            animate={open ? "open" : "hidden"}
+            initial="hidden"
+            variants={variants}
+            transition={{ ease: "easeInOut", duration: 0.1 }}
             className=" fixed  top-0 right-0 pt-16 w-full h-full lg:hidden "
             onClick={() => setOpen(false)}
-          ></div>
+          ></motion.div>
           <motion.div
             animate={open ? "open" : "hidden"}
             initial="hidden"

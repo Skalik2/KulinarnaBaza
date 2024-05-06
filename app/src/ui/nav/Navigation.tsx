@@ -54,7 +54,7 @@ export default function Navigation() {
             Zaloguj
           </Link>
           <Link
-            to="login"
+            to="signup"
             className="px-5 py-2 bg-main hover:bg-mainHover  rounded-full text-bgWhite tracking-wider font-medium transition-colors duration-300 text-[15px]"
           >
             Zarejestruj

@@ -1,7 +1,5 @@
-import React from 'react'
+import React from "react";
 
 export default function Articles() {
-  return (
-    <div>Artykuły here</div>
-  )
+  return <div className="pt-16 md:pt-[72px]">Artykuły here</div>;
 }
