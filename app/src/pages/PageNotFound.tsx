@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function PageNotFound() {
   return (
-    <div className="flex flex-row flex-wrap justify-center content-center gap-8 dark:bg-bgDark h-[calc(100vh-64px)] md:h-[calc(100vh-72px)] w-full">
+    <div className="flex flex-row flex-wrap justify-center content-center gap-8 dark:bg-bgDark h-screen w-full">
       <div>
         <svg className="w-40 dark:invert" xmlns="http://www.w3.org/2000/svg" version="1.1" id="Capa_1" viewBox="0 0 60 60">
         <g>
