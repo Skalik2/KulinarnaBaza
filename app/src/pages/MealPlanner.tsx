@@ -1,8 +1,9 @@
-import React from 'react'
-import Days from '../ui/meal planner/days'
+import Days from "../ui/mealPlanner/days";
 
 export default function MealPlanner() {
   return (
-    <Days />
-  )
+    <div className=" bg-bgWhite text-bgDark dark:bg-bgDark dark:text-bgWhite flex flex-row justify-center">
+      <Days />
+    </div>
+  );
 }
