@@ -8,6 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 require('./auth')(app);
+require('./fridge')(app);
 
 app.get("/api",(req: Request, res: Response) =>{
 
