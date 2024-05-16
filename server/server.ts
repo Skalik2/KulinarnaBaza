@@ -1,11 +1,17 @@
 import express, { Express, Request, Response } from "express";
-import cors from "cors";
-
 const pool = require("./db");
+import cors from 'cors';
 const app: Express = express();
 
-app.use(cors());
-app.use(express.json());
+const clientPort = 3000
+
+const corsOptions = {
+        origin: `http://localhost:${clientPort}`,
+        credentials: true,
+};
+
+app.use(cors(corsOptions));
+
 
 require('./auth')(app);
 

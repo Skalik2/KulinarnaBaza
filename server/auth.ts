@@ -21,7 +21,7 @@ module.exports = function(app : Express) {
         cookie: { secure: false }
     }));
 
-    app.post("/api/login", bodyParser.json(), async(req : any, res) => {
+    app.post("/api/login", bodyParser.json(), async(req : any, res: any) => {
         try {
             const { email, password } = req.body;
             console.log("Login request:\n", email, password);
@@ -45,6 +45,7 @@ module.exports = function(app : Express) {
             console.log("Correct password:",comparePasswords(password, result.rows[0].haslo));
             console.log("Logged in successfully!")
             req.session.user = email;
+            req.session.authenticated = true;
             res.status(256).json( {"response": "Logged in successfully!"} );
 
         }
@@ -83,9 +84,9 @@ module.exports = function(app : Express) {
     app.get("/api/logout", bodyParser.json(), async(req : any, res) => {
         try {
             req.session.user = null;
-            req.session.authenticated = false;
             req.session.destroy()
             req.session = null;
+            console.log("Logged out!");
             res.status(256).json( {"response": "Logged out successfully!"} );
         }
         catch (err) {

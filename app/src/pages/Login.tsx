@@ -3,6 +3,8 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import FormInput from "../ui/FormInput";
 import { Link } from "react-router-dom";
 import { DarkModeContext } from "../context/DarkModeContext";
+import axios from "axios";
+axios.defaults.withCredentials = true;
 
 export default function Login() {
   const {
@@ -14,6 +16,20 @@ export default function Login() {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data);
+    axios.post("http://localhost:5000/api/login", 
+      {
+        email: data.email,
+        password: data.password,
+      },
+      {
+        withCredentials: true,
+      }
+    ).then((res: any) => {
+      console.log(res);
+      window.location.href = "/";
+    });
+    
+
   };
   return (
     <div className="w-full h-screen">

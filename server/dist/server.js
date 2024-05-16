@@ -13,11 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
 const pool = require("./db");
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)());
-app.use(express_1.default.json());
+const clientPort = 3000;
+const corsOptions = {
+    origin: `http://localhost:${clientPort}`,
+    credentials: true,
+};
+app.use((0, cors_1.default)(corsOptions));
 require('./auth')(app);
 app.get("/api", (req, res) => {
     res.json({ "testServera": ["dziala", "nie dziala", "może dziala"] });
@@ -41,6 +45,25 @@ app.get("/api/getUsers", (req, res) => __awaiter(void 0, void 0, void 0, functio
         const newTag = yield pool.query("SELECT * FROM public.uzytkownik");
         res.json(newTag.rows[0].imie);
         console.log(newTag.rows[0].imie);
+    }
+    catch (err) {
+        console.error(err.message);
+    }
+}));
+app.get("/api/getTag/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const tag = yield pool.query("SELECT nazwa FROM tag WHERE id = $1", [id]);
+        res.json(tag.rows[0]);
+    }
+    catch (err) {
+        console.error(err.message);
+    }
+}));
+app.get("/api/getAllTags", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const allTags = yield pool.query("SELECT nazwa FROM tag");
+        res.json(allTags.rows);
     }
     catch (err) {
         console.error(err.message);

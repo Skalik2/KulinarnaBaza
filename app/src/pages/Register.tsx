@@ -3,6 +3,7 @@ import FormInput from "../ui/FormInput";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { DarkModeContext } from "../context/DarkModeContext";
+import axios from "axios";
 
 export default function Register() {
   const {
@@ -14,9 +15,18 @@ export default function Register() {
   const { isDarkMode } = useContext(DarkModeContext);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+    console.log(data.email)
+    axios.put("http://localhost:5000/api/register", 
+      {
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        lastname: data.surname,
+      }
+    ).then((res: any) => {
+      window.location.href = "/login";
+    });
   };
-
   return (
     <div className="w-full h-screen">
       <div className="h-screen w-full bg-bgWhite dark:bg-bgDark p-6 flex justify-center items-center pt-[64px]">

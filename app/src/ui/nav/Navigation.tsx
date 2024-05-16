@@ -46,7 +46,7 @@ export default function Navigation() {
           open={open}
           navigationOptions={navigationOptions}
         />
-        <div className="hidden lg:flex justify-center items-center gap-5 ">
+        <div className="hidden lg:flex justify-center items-center gap-5">
           <Link
             to="login"
             className="pl-3 pr-5 py-2 hover:text-mainHover dark:hover:text-mainHover dark:text-bgWhite text-bgDark tracking-wider font-medium transition-colors duration-300 text-[15px]"
