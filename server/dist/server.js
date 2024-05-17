@@ -23,6 +23,7 @@ const corsOptions = {
 };
 app.use((0, cors_1.default)(corsOptions));
 require('./auth')(app);
+require('./comments')(app);
 app.get("/api", (req, res) => {
     res.json({ "testServera": ["dziala", "nie dziala", "może dziala"] });
 });

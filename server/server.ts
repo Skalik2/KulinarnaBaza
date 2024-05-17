@@ -14,6 +14,7 @@ app.use(cors(corsOptions));
 
 
 require('./auth')(app);
+require('./comments')(app);
 
 app.get("/api",(req: Request, res: Response) =>{
 
