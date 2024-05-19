@@ -1,11 +1,18 @@
 import express, { Express, Request, Response } from "express";
-import cors from "cors";
 import bodyParser from "body-parser";
 
 const pool = require("./db");
+import cors from 'cors';
 const app: Express = express();
 
-app.use(cors());
+const clientPort = 3000
+
+const corsOptions = {
+        origin: `http://localhost:${clientPort}`,
+        credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json({limit: '50mb'}));
 
 require('./auth')(app);

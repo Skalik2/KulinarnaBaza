@@ -3,7 +3,7 @@ import { FaSquareXTwitter } from "react-icons/fa6";
 
 export default function Footer() {
   return (
-    <div className='flex flex-col flex-wrap'>
+    <div className='flex flex-col flex-wrap bg-bgWhite dark:bg-bgDark'>
             <div className=' flex flex-col flex-wrap bg-bgWhite mx-auto text-bgDark dark:bg-bgDark dark:text-bgWhite justify-center items-center text-center p-7 w-full'>
                 <h1 className=' text-3xl mx-auto'>KulinarnaBaza</h1>
                 <p className='p-3'>Najsmaczniejsze przepisy w jednym miejscu, poznaj nasze smaki!</p>

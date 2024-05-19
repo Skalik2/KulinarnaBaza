@@ -41,7 +41,7 @@ const Carousel: React.FC = () => {
       </p>
       <div className="flex flex-col relative">
         <button
-          className=" absolute z-10 top-1/2 text-white text-4xl left-4 rounded-full bg-bgDark opacity-75 font-bold p-1 w-11 h-11 dark:bg-bgWhite dark:text-bgDark"
+          className="absolute z-10 top-1/3 text-white text-4xl left-4 rounded-full bg-bgDark opacity-75 font-bold p-1 w-11 h-11 dark:bg-bgWhite dark:text-bgDark"
           onClick={goToPrevious}
         >
           &lt;
@@ -64,7 +64,7 @@ const Carousel: React.FC = () => {
           </div>
         </Slider>
         <button
-          className=" absolute z-10 top-1/2 text-white text-4xl right-4 rounded-full bg-bgDark opacity-75 font-bold p-1 w-11 h-11 dark:bg-bgWhite dark:text-bgDark"
+          className=" absolute z-10 top-1/3 text-white text-4xl right-4 rounded-full bg-bgDark opacity-75 font-bold p-1 w-11 h-11 dark:bg-bgWhite dark:text-bgDark"
           onClick={goToNext}
         >
           &gt;
