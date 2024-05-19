@@ -61,5 +61,14 @@ module.exports = function (app: Express) {
         }
       });
 
+      app.get("/api/articles", bodyParser.json(), async (req: any, res) => {
+        try {
+          const result = await pool.query("SELECT * FROM artykul")
+          res.status(200).json({ response: result.rows });
+        } catch (err) {
+          console.error("Getting articles failed", err);
+          res.status(500).json({ error: "Getting articles failed" });
+        }
+      });
 
 };
