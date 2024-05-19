@@ -64,11 +64,11 @@ module.exports = function(app : Express) {
             else {
 
                 const result = await pool.query(
-                    "SELECT id_uzytkownika FROM public.uzytkownik WHERE email = $1",
+                    "SELECT id_uzytkownika, imie, nazwisko FROM public.uzytkownik WHERE email = $1",
                     [req.session.user]
                 );
                 if (result.rowCount == 1){
-                    res.status(200).json( { response: "Session is valid!"} );
+                    res.status(200).json( {response: { id_uzytkownika: result.rows[0].id_uzytkownika, imie: result.rows[0].imie, nazwisko:result.rows[0].nazwisko}} );
                 }
                 else {
                     res.status(401).json({ response: "User session is not valid!" });
