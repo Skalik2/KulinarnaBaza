@@ -18,6 +18,7 @@ import UserRecipes from "./pages/UserRecipes";
 import Account from "./pages/Account";
 import Favorite from "./pages/Favorite";
 import AddNewRecipe from "./pages/AddNewRecipe";
+import Recipe from "./pages/Recipe";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,6 +52,7 @@ function App() {
                 <Route path="login" element={<Login />} />
                 <Route path="signup" element={<Register />} />
                 <Route path="recipes" element={<Recipes />} />
+                <Route path="recipes/:id" element={<Recipe />} />
                 <Route path="recipes/add-new" element={<AddNewRecipe />} />
                 <Route path="articles" element={<Articles />} />
                 <Route path="planner" element={<MealPlanner />} />

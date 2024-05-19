@@ -32,12 +32,19 @@ export default function Recipes() {
         </div>
       ) : (
         <>
-          <RecipeCard imageSrc="../../images/hero.jpg" title="Przepis" />
+          {/* w linku powinno być id przepisu!!! */}
           <RecipeCard
+            link="/recipes/kanapka"
+            imageSrc="../../images/hero.jpg"
+            title="Przepis"
+          />
+          <RecipeCard
+            link="/recipes/chleb"
             imageSrc="../../images/hero.jpg"
             title="Dłuższy przepis"
           />
           <RecipeCard
+            link="/recipes/mleko"
             imageSrc="../../images/hero.jpg"
             title="Jeszcze dłuższa nazwa"
           />
