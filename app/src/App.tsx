@@ -14,6 +14,9 @@ import Recipes from "./pages/Recipes";
 import Articles from "./pages/Articles";
 import MealPlanner from "./pages/MealPlanner";
 import Rank from "./pages/Rank";
+import UserRecipes from "./pages/UserRecipes";
+import Account from "./pages/Account";
+import Favorite from "./pages/Favorite";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,6 +52,9 @@ function App() {
                 <Route path="recipes" element={<Recipes />} />
                 <Route path="articles" element={<Articles />} />
                 <Route path="planner" element={<MealPlanner />} />
+                <Route path="account" element={<Account />} />
+                <Route path="my-recipes" element={<UserRecipes />} />
+                <Route path="favorite" element={<Favorite />} />
                 <Route path="rank" element={<Rank />} />
                 <Route path="*" element={<PageNotFound />} />
               </Route>
