@@ -1,6 +1,6 @@
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import FormInput from "../ui/FormInput";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { DarkModeContext } from "../context/DarkModeContext";
 import axios from "axios";
@@ -13,19 +13,21 @@ export default function Register() {
     formState: { errors },
   } = useForm<FieldValues>();
   const { isDarkMode } = useContext(DarkModeContext);
+  const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data.email)
-    axios.put("http://localhost:5000/api/register", 
-      {
+    console.log(data.email);
+    axios
+      .put("http://localhost:5000/api/register", {
         email: data.email,
         password: data.password,
         name: data.name,
         lastname: data.surname,
-      }
-    ).then((res: any) => {
-      window.location.href = "/login";
-    });
+      })
+      .then((res: any) => {
+        console.log(res);
+        navigate("/login");
+      });
   };
   return (
     <div className="w-full h-screen">
