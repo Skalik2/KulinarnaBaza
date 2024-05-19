@@ -1,4 +1,6 @@
 import express, { Express, Request, Response } from "express";
+import bodyParser from "body-parser";
+
 const pool = require("./db");
 import cors from 'cors';
 const app: Express = express();
@@ -11,9 +13,11 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
+app.use(bodyParser.json({limit: '50mb'}));
 
 require('./auth')(app);
+require('./fridge')(app);
+require('./recipes')(app);
 
 app.get("/api",(req: Request, res: Response) =>{
 
