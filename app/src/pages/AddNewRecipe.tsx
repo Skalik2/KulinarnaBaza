@@ -1,15 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import FormInput from "../ui/FormInput";
+import axios from "axios";
 
 export default function AddNewRecipe() {
   const {
     register,
     handleSubmit,
-    getValues,
     formState: { errors },
   } = useForm<FieldValues>();
   const [ingredients, setIngredients] = useState([{}]);
+  const [recipeIngredients, setRecipeIngredients] = useState([{}]);
+  const [selectedIngredient, setSelectedIngredient] = useState(
+    ingredients[0] || {}
+  );
+
+  useEffect(function () {
+    axios.get("http://localhost:5000/api/ingredients").then((res) => {
+      setIngredients(res.data.response);
+    });
+
+    console.log(ingredients);
+  }, []);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data);
@@ -64,8 +76,34 @@ export default function AddNewRecipe() {
               </p>
             )}
           </div>
-          <div>Trzeba tu dodac tagi oraz składniki !!!</div>
-          <button className="w-[300px] bg-main hover:bg-mainHover py-2 text-white uppercase tracking-wide  rounded-full transition-all duration-300">
+          <div className="w-full mt-10">
+            <p className="text-left">Dodaj składniki:</p>
+            {recipeIngredients.length !== 0 &&
+              recipeIngredients.map((item) => <div>{item.nazwa}</div>)}
+            <select onChange={(e) => setSelectedIngredient(e.target.value)}>
+              {ingredients.map((item) => (
+                <option value={item.id_skladnik}>{item.nazwa}</option>
+              ))}
+            </select>
+            <label>Wprowadź ilość:</label>
+            <input />
+            <button
+              type="button"
+              onClick={() =>
+                setRecipeIngredients((ingredients) => [
+                  ...ingredients,
+                  selectedIngredient,
+                ])
+              }
+            >
+              Dodaj składnik
+            </button>
+          </div>
+          <p>Jeszcze tagi i zdjecie!!!</p>
+          <button
+            type="submit"
+            className="w-[300px] bg-main hover:bg-mainHover py-2 text-white uppercase tracking-wide  rounded-full transition-all duration-300"
+          >
             Dodaj przepis
           </button>
         </div>
