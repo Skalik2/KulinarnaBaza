@@ -115,6 +115,7 @@ export default function MobileNav({
               )}
               {navigationOptions.map((item) => (
                 <MobileNavItem
+                  key={item.link}
                   link={item.link}
                   title={item.title}
                   onOpen={setOpen}

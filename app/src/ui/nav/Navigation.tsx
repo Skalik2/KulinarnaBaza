@@ -30,6 +30,7 @@ export default function Navigation() {
         <div className="hidden lg:flex h-full justify-center items-center gap-8">
           {navigationOptions.map((item) => (
             <Link
+              key={item.link}
               to={item.link}
               className="font-medium text-[15px] dark:text-bgWhite text-bgDark dark:hover:text-mainHover hover:text-mainHover transition-colors duration-300 "
             >
