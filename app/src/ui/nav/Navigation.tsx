@@ -7,35 +7,24 @@ import { LiaNewspaper } from "react-icons/lia";
 import { TbArticle } from "react-icons/tb";
 import { MdOutlineEditCalendar } from "react-icons/md";
 import { FaRankingStar } from "react-icons/fa6";
-import Button from "@mui/material/Button";
-import { DropTooltip } from "../DropTooltip";
-import Tooltip from "@mui/material/Tooltip";
 import axios from "axios";
-import { Menu, MenuItem } from "@mui/material";
 import toast from "react-hot-toast";
+import { useUser } from "../../hooks/useUser";
 
 export default function Navigation() {
   const [open, setOpen] = useState(false);
   const [userAuth, setUserAuth] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const openDrop = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const { data, isLoading } = useUser();
 
-  useEffect(function () {
-    axios
-      .get("http://localhost:5000/api/checkSession", {
-        withCredentials: true,
-      })
-      .then((res: any) => {
-        console.log(res);
-        setUserAuth(res.status === 200);
-      });
-  }, []);
+  useEffect(
+    function () {
+      // console.log(data);
+      if (data) {
+        setUserAuth(true);
+      }
+    },
+    [data, isLoading]
+  );
 
   const navigationOptions = [
     { title: "Przepisy", link: "recipes", icon: <LiaNewspaper /> },
@@ -77,7 +66,7 @@ export default function Navigation() {
           <div className="hidden lg:flex justify-center items-center gap-5">
             <div className="relative p-2 group">
               <p className="hover:cursor-pointer text-[15px] text-bgDark dark:text-bgWhite hover:text-mainHover dark:hover:text-mainHover transition-colors duration-300">
-                Imie Nazwisko
+                {data?.imie} {data?.nazwisko}
               </p>
               <div className="absolute top-[100%] w-[170px] p-4 right-0 hidden group-hover:flex flex-col bg-bgWhite dark:bg-bgDark gap-1 shadow-lg">
                 <Link
