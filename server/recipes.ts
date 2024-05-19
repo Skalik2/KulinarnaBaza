@@ -82,6 +82,8 @@ module.exports = function (app: Express) {
   app.get("/api/recipes/:recipeId", bodyParser.json(), async (req: any, res) => {
     try {
       const result = await pool.query(`SELECT * FROM przepis WHERE id_przepisu = ${req.params.recipeId}`)
+      const views = result.rows[0].wyswietlenia + 1
+      await pool.query(`UPDATE przepis SET wyswietlenia = ${views} WHERE id_przepisu = ${req.params.recipeId}`)
       const ingredients = await pool.query(`SELECT * FROM skladnik_w_przepisie WHERE id_przepisu = ${req.params.recipeId}`)
       res.status(200).json({ przepis: result.rows, skladniki: ingredients.rows });
     } catch (err) {
