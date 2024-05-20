@@ -25,7 +25,8 @@ module.exports = function (app: Express) {
   app.post("/api/recipes/:userId", bodyParser.json(), async (req: any, res) => {
     try {
       let id = await pool.query(`SELECT max(id_przepisu) FROM przepis`);
-      id = id.rows[0].max
+      console.log(id)
+      id = id.rows[0].max + 1
       if (id == null){
         id = 1
       }
@@ -56,6 +57,11 @@ module.exports = function (app: Express) {
       for (let i = 0; i < req.body.skladniki.length; i++) {
         await pool.query(
           `INSERT INTO skladnik_w_przepisie VALUES (${id}, ${req.body.skladniki[i].id_skladnika}, ${req.body.skladniki[i].ilosc})`
+        );
+      }
+      for (let j = 0; j < req.body.tagi.length; j++) {
+        await pool.query(
+          `INSERT INTO tag_w_przepisie VALUES (${req.body.tagi[j].id_tagu}, ${id})`
         );
       }
 

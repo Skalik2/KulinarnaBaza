@@ -19,6 +19,7 @@ require('./auth')(app);
 require('./fridge')(app);
 require('./recipes')(app);
 require('./ingredients')(app);
+require('./tags')(app);
 require('./articles')(app);
 
 app.get("/api",(req: Request, res: Response) =>{
