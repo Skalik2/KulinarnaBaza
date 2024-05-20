@@ -80,7 +80,7 @@ module.exports = function (app: Express) {
       const result = await pool.query("SELECT * FROM przepis")
       res.status(200).json({ response: result.rows });
     } catch (err) {
-      console.error("Getting recipes recipes failed", err);
+      console.error("Getting recipes failed", err);
       res.status(500).json({ error: "Getting recipes failed" });
     }
   });
@@ -104,7 +104,34 @@ module.exports = function (app: Express) {
       res.status(200).json({ przepis: result.rows});
     } catch (err) {
       console.error(`Getting user ${req.params.userId}'s collection failed`, err);
-      res.status(500).json({ error: "Getting user collection" });
+      res.status(500).json({ error: "Getting user collection failed" });
+    }
+  });
+
+  app.put("/api/recipes/:userId/:recipeId", bodyParser.json(), async (req: any, res) => {
+    try {
+      const valid = await pool.query(`SELECT * FROM przepis WHERE id_przepisu = ${req.params.recipeId}`)
+      if (valid.rowCount === 1){
+        await pool.query(`INSERT INTO ulubione VALUES (${req.params.recipeId}, ${req.params.userId})`)
+      }
+      else {
+        throw new Error(`No recipe with given id: ${req.params.recipeId}`)
+      }
+      res.status(200).json({ response: `Recipe ${req.params.recipeId} added to user ${req.params.userId}'s favourites`});
+    } catch (err) {
+      console.error(`Adding recipe to user ${req.params.userId}'s favourite failed`, err);
+      res.status(500).json({ error: `Adding recipe to user ${req.params.userId}'s favourite failed`});
+    }
+  });
+
+  app.get("/api/recipes/:userId/getfav", bodyParser.json(), async (req: any, res) => {
+    try {
+      const result = await pool.query(`SELECT * FROM przepis JOIN ulubione on przepis.id_przepisu = ulubione.id_przepisu WHERE ulubione.id_uzytkownika = ${req.params.userId}`)
+      
+      res.status(200).json({ response: result.rows});
+    } catch (err) {
+      console.error(`Getting user ${req.params.userId}'s favourite failed`, err);
+      res.status(500).json({ error: `Getting user ${req.params.userId}'s favourite failed`});
     }
   });
 
