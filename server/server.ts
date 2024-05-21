@@ -16,6 +16,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json({limit: '50mb'}));
 
 require('./auth')(app);
+require('./comments')(app);
 require('./fridge')(app);
 require('./recipes')(app);
 require('./ingredients')(app);
