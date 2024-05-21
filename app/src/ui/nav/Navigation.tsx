@@ -29,7 +29,6 @@ export default function Navigation() {
   const navigationOptions = [
     { title: "Przepisy", link: "recipes", icon: <LiaNewspaper /> },
     { title: "Artykuły", link: "articles", icon: <TbArticle /> },
-    { title: "Meal Planner", link: "planner", icon: <MdOutlineEditCalendar /> },
     { title: "Ranking", link: "rank", icon: <FaRankingStar /> },
   ];
 
@@ -80,6 +79,12 @@ export default function Navigation() {
                   className="text-[15px] text-bgDark dark:text-bgWhite hover:text-mainHover dark:hover:text-mainHover transition-colors duration-300 font-medium p-2"
                 >
                   Moje Przepisy
+                </Link>
+                <Link
+                  to="planner"
+                  className="text-[15px] text-bgDark dark:text-bgWhite hover:text-mainHover dark:hover:text-mainHover transition-colors duration-300 font-medium p-2"
+                >
+                  Plan posiłków
                 </Link>
                 <Link
                   to="favorite"
