@@ -28,7 +28,10 @@ require('./auth')(app);
 require('./comments')(app);
 require('./fridge')(app);
 require('./recipes')(app);
+require('./ingredients')(app);
+require('./tags')(app);
 require('./articles')(app);
+require('./mealplanner')(app);
 app.get("/api", (req, res) => {
     res.json({ "testServera": ["dziala", "nie dziala", "może dziala"] });
 });

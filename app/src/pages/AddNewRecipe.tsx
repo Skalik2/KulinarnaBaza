@@ -2,6 +2,24 @@ import React, { useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import FormInput from "../ui/FormInput";
 import axios from "axios";
+import Modal from "../ui/Modal";
+import AddNewIngModal from "../ui/recipes/AddNewIngModal";
+import AddNewTagModal from "../ui/recipes/AddNewTagModal";
+
+export interface ingredientInterface {
+  id_skladnik: number;
+  nazwa: string;
+}
+
+export interface recipeIng {
+  ingredient: ingredientInterface;
+  amount: string;
+}
+
+export interface tagInterface {
+  id_tagu: number;
+  nazwa: string;
+}
 
 export default function AddNewRecipe() {
   const {
@@ -9,27 +27,54 @@ export default function AddNewRecipe() {
     handleSubmit,
     formState: { errors },
   } = useForm<FieldValues>();
-  const [ingredients, setIngredients] = useState([{}]);
-  const [recipeIngredients, setRecipeIngredients] = useState([{}]);
-  const [selectedIngredient, setSelectedIngredient] = useState(
-    ingredients[0] || {}
-  );
+  const [ingredients, setIngredients] = useState<ingredientInterface[]>();
+  const [recipeIngredients, setRecipeIngredients] = useState<recipeIng[]>([]);
 
+  const [tags, setTags] = useState<tagInterface[]>();
+  const [recipeTags, setRecipeTags] = useState<tagInterface[]>([]);
+
+  const [selectedImage, setSelectedImage] = useState("");
+  const [base64Image, setBase64Image] = useState("");
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = (reader.result as string)
+          ?.replace("data:", "")
+          .replace(/^.+,/, "");
+        setBase64Image(base64);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   useEffect(function () {
     axios.get("http://localhost:5000/api/ingredients").then((res) => {
       setIngredients(res.data.response);
     });
 
-    console.log(ingredients);
+    axios.get("http://localhost:5000/api/tags").then((res) => {
+      setTags(res.data.response);
+    });
   }, []);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    
+    //składniki trzeba przekształcic, bo są w złym formacie !!!!!!!!!!!!!!!!!!!
+
     console.log(data);
+    console.log(recipeIngredients);
+    console.log(recipeTags);
+    console.log(base64Image);
   };
 
   return (
     <div className="py-16 md:pt-[72px] flex justify-center items-center flex-col gap-4 dark:bg-bgDark mt-10">
-      <p className="text-center text-lg">Dodaj swój nowy przepis</p>
+      <p className="text-center text-lg dark:text-bgWhite">
+        Dodaj swój nowy przepis
+      </p>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-4 md400:gap-6 xs:w-full xs:px-10 pt-10 h-full max-w-[800px]"
@@ -59,7 +104,7 @@ export default function AddNewRecipe() {
             />
           </div>
           <div className="relative w-full">
-            <label className="text-sm ml-4 dark:text-bgWhite text-bgDark">
+            <label className="text-sm ml-4 dark:text-bgWhite text-bgDark ">
               Opis przepisu
             </label>
             <textarea
@@ -77,29 +122,108 @@ export default function AddNewRecipe() {
             )}
           </div>
           <div className="w-full mt-10">
-            <p className="text-left">Dodaj składniki:</p>
-            {recipeIngredients.length !== 0 &&
-              recipeIngredients.map((item) => <div>{item.nazwa}</div>)}
-            <select onChange={(e) => setSelectedIngredient(e.target.value)}>
-              {ingredients.map((item) => (
-                <option value={item.id_skladnik}>{item.nazwa}</option>
-              ))}
-            </select>
-            <label>Wprowadź ilość:</label>
-            <input />
-            <button
-              type="button"
-              onClick={() =>
-                setRecipeIngredients((ingredients) => [
-                  ...ingredients,
-                  selectedIngredient,
-                ])
-              }
-            >
-              Dodaj składnik
-            </button>
+            <p className="text-left dark:text-bgWhite">
+              Składniki w przepisie:
+            </p>
+            {recipeIngredients.length > 0 ? (
+              recipeIngredients.map((item) => (
+                <div className="flex gap-5 justify-start items-center my-2 py-8">
+                  <div className="w-2 h-2 rounded-full bg-main"></div>
+                  <p className="text-bgDark dark:text-bgWhite">
+                    {item.ingredient.nazwa} - {item.amount}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <div className="w-full py-10 flex justify-center items-center">
+                <p className="text-bgDark dark:text-bgWhite">
+                  Dodaj składniki przepisu
+                </p>
+              </div>
+            )}
+            <Modal>
+              <Modal.Open opens="addIng">
+                <button
+                  className="w-[300px] border-main border-solid border-2 py-2 text-main uppercase tracking-wide  rounded-full transition-all duration-300 hover:bg-main hover:text-bgWhite"
+                  type="button"
+                >
+                  Dodaj kolejny składnik
+                </button>
+              </Modal.Open>
+              <Modal.Window name="addIng">
+                <AddNewIngModal
+                  onCloseModal={undefined as never}
+                  ingredients={ingredients}
+                  setRecipeIngredients={setRecipeIngredients}
+                />
+              </Modal.Window>
+            </Modal>
           </div>
-          <p>Jeszcze tagi i zdjecie!!!</p>
+
+          <div className="w-full mt-10">
+            <p className="text-left dark:text-bgWhite">
+              Dodaj tagi opisujące ten przepis:
+            </p>
+
+            {recipeTags.length > 0 ? (
+              <div className="flex flex-wrap justify-center items-center gap-5 py-8">
+                {recipeTags.map((item) => (
+                  <div className="px-3 py-2 rounded-lg bg-bgWhiteHover dark:bg-bgDarkHover text-bgDark dark:text-bgWhite ">
+                    <p>{item.nazwa}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="w-full py-10 flex justify-center items-center text-bgDark dark:text-bgWhite">
+                <p className="">Dodaj tagi przepisu</p>
+              </div>
+            )}
+            <Modal>
+              <Modal.Open opens="addTag">
+                <button
+                  className="w-[250px] border-main border-solid border-2 py-2 text-main uppercase tracking-wide  rounded-full transition-all duration-300 hover:bg-main hover:text-bgWhite"
+                  type="button"
+                >
+                  Dodaj kolejny tag
+                </button>
+              </Modal.Open>
+              <Modal.Window name="addTag">
+                <AddNewTagModal
+                  onCloseModal={undefined as never}
+                  tags={tags}
+                  setRecipeTags={setRecipeTags}
+                />
+              </Modal.Window>
+            </Modal>
+          </div>
+
+          <div className="w-full mt-10">
+            <p className="text-left dark:text-bgWhite">
+              Dodaj zdjęcie przedstawiające to smakowite danie:
+            </p>
+            <label className="block text-center w-[250px] border-main border-solid border-2 py-2 text-main uppercase tracking-wide  rounded-full transition-all duration-300 hover:bg-main hover:text-bgWhite cursor-pointer my-10">
+              <span className="">
+                {selectedImage ? "Zmień zdjęcie" : "Dodaj zdjęcie"}
+              </span>
+              <input
+                type="file"
+                className="hidden"
+                name="myImage"
+                onChange={handleFileChange}
+                accept="image/*"
+              />
+            </label>
+            <div className="w-full">
+              {selectedImage ? (
+                <img
+                  src={selectedImage}
+                  alt="Twoje wybrane zdjęcie, jeśli nie działa to zepsułem coś :("
+                />
+              ) : (
+                <div className="bg-gray-400 w-full h-96"></div>
+              )}
+            </div>
+          </div>
           <button
             type="submit"
             className="w-[300px] bg-main hover:bg-mainHover py-2 text-white uppercase tracking-wide  rounded-full transition-all duration-300"

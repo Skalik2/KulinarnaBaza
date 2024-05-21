@@ -14,10 +14,12 @@ export default function Recipes() {
     <div className="flex flex-wrap py-16 md:pt-[72px] justify-center gap-4 dark:bg-bgDark mt-10">
       {userAuth && (
         <div className="w-full flex justify-center items-center flex-col gap-6 md:gap-10 p-4 my-10 md:my-20">
-          <p className="text-xl md:text-3xl">
+          <p className="text-xl md:text-3xl dark:text-bgWhite">
             Masz doskonały przepis godny polecenia?
           </p>
-          <p className="text-lg">Podziel się nim z innymi użytkownikami!!!</p>
+          <p className="text-lg dark:text-bgWhite">
+            Podziel się nim z innymi użytkownikami!!!
+          </p>
           <Link
             to="/recipes/add-new"
             className="px-5 py-2 bg-main hover:bg-mainHover  rounded-full text-bgWhite tracking-wider font-medium transition-colors duration-300 text-[15px]"

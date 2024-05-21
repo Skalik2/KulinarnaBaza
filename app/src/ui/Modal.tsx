@@ -63,13 +63,10 @@ function Window({ children, name }: WindowProps) {
   if (name !== openName) return null;
 
   return createPortal(
-    <div className="absolute top-0 left-0 h-full w-full">
-      <div
-        className="h-full w-full bg-bgDark opacity-20"
-        onClick={close}
-      ></div>
+    <div className="fixed top-0 left-0 h-full w-full">
+      <div className="h-full w-full bg-bgDark opacity-20" onClick={close}></div>
       <motion.div
-        className="fixed top-1/2 left-1/2 bg-white -translate-y-1/2 -translate-x-1/2 z-[51] rounded-lg p-4"
+        className="fixed top-1/2 left-1/2 bg-white dark:bg-bgDarkHover -translate-y-1/2 -translate-x-1/2 z-[51] rounded-lg p-6"
         animate={{ translateY: "-50%", translateX: "-50%", opacity: 1 }}
         initial={{ translateY: "-40%", translateX: "-50%", opacity: 0 }}
         transition={{ ease: "easeInOut", duration: 0.3 }}
