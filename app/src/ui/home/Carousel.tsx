@@ -34,7 +34,7 @@ const Carousel: React.FC = () => {
   };
 
   return (
-    <div className=" pt-16 pb-10 dark:bg-bgDark dark:text-bgWhite text-center">
+    <div className=" pt-16 pb-10 bg-bgWhite dark:bg-bgDark dark:text-bgWhite text-center">
       <h1 className=" text-5xl py-2">Nasze najlepsze dania</h1>
       <p className=" mb-10 pb-2 px-8 border-b-4 inline-block border-b-main">
         Zobacz je wszystkie

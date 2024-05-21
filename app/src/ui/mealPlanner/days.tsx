@@ -47,15 +47,15 @@ export default function Days() {
     setWeekOffset((prevOffset: number) => prevOffset + offset);
   };
   return (
-    <div className="text-white h-screen flex justify-center items-center w-96 text-sm font-semibold">
-      <button onClick={() => handleWeekChange(-1)}>&lt;</button>
+    <div className="text-white h-screen flex justify-center items-center w-96 text-sm font-bold">
+      <button onClick={() => handleWeekChange(-1) } className=' text-2xl text-bgDark dark:text-bgWhite'>&lt;</button>
       {week.map((day) => (
         <div className=" bg-main rounded-xl aspect-square py-0.5 m-2 w-full flex justify-center items-center flex-col hover:bg-mainHover duration-300">
           <p className="">{day.initial}</p>
           <p>{day.dateThisWeek.getDate()}/{day.dateThisWeek.getMonth()+1}</p>
         </div>
       ))}
-      <button onClick={() => handleWeekChange(+1)}>&gt;</button>
+      <button onClick={() => handleWeekChange(+1)} className=' text-2xl text-bgDark dark:text-bgWhite'>&gt;</button>
     </div>
   );
 }

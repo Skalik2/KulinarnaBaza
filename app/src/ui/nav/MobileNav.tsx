@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import MobileNavItem from "./MobileNavItem";
@@ -7,6 +7,8 @@ import { MdFavoriteBorder } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 import { RiUserAddLine } from "react-icons/ri";
 import { CiLogin } from "react-icons/ci";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 type navOption = {
   title: string;
@@ -26,7 +28,18 @@ export default function MobileNav({
   navigationOptions,
 }: MobileNavProps) {
   const portalContainer = document.getElementById("app");
-  const userAuth = false; //cza to bedzei zmieniccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+  const [userAuth, setUserAuth] = useState(false);
+
+  useEffect(function () {
+    axios
+      .get("http://localhost:5000/api/checkSession", {
+        withCredentials: true,
+      })
+      .then((res: any) => {
+        console.log(res);
+        setUserAuth(res.status === 200);
+      });
+  }, []);
 
   const variants = {
     open: {
@@ -36,18 +49,6 @@ export default function MobileNav({
       x: "100%",
     },
   };
-
-  // useEffect(() => {
-  //   if (open) {
-  //     document.body.style.overflow = "hidden";
-  //   } else {
-  //     document.body.style.overflow = "auto";
-  //   }
-
-  //   return () => {
-  //     document.body.style.overflow = "auto";
-  //   };
-  // }, [open, portalContainer]);
 
   if (!portalContainer) {
     return null;
@@ -115,12 +116,29 @@ export default function MobileNav({
               )}
               {navigationOptions.map((item) => (
                 <MobileNavItem
+                  key={item.link}
                   link={item.link}
                   title={item.title}
                   onOpen={setOpen}
                   icon={item.icon}
                 />
               ))}
+              {userAuth && (
+                <>
+                  <div className="w-5/6 h-[1px] bg-bgWhiteHover dark:bg-bgDarkHover"></div>
+                  <button
+                    onClick={() => {
+                      axios.get("http://localhost:5000/api/logout").then(() => {
+                        toast.success("Wylogowano");
+                        window.location.href = "/";
+                      });
+                    }}
+                    className="text-left text-[15px] text-red-500 hover:text-mainHover transition-colors duration-300 font-medium p-4"
+                  >
+                    Wyloguj
+                  </button>
+                </>
+              )}
             </div>
           </motion.div>
         </>,
