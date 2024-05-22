@@ -34,7 +34,7 @@ export default function AddNewRecipe() {
   const [ingredients, setIngredients] = useState<ingredientInterface[]>();
   const [recipeIngredients, setRecipeIngredients] = useState<recipeIng[]>([]);
 
-  const { isSuccess, sendRecipe } = useSendRecipe();
+  const { sendRecipe } = useSendRecipe();
 
   const [tags, setTags] = useState<tagInterface[]>();
   const [recipeTags, setRecipeTags] = useState<tagInterface[]>([]);
@@ -56,6 +56,7 @@ export default function AddNewRecipe() {
       reader.readAsDataURL(file);
     }
   };
+
   useEffect(function () {
     axios.get("http://localhost:5000/api/ingredients").then((res) => {
       setIngredients(res.data.response);
@@ -81,11 +82,12 @@ export default function AddNewRecipe() {
       tagi: recipeTags.map((item) => {
         return { id_tagu: item.id_tagu };
       }),
-      zdjecie: "data:image/jpeg;base64," + base64Image,
+      zdjecie:  base64Image,
     };
     sendRecipe({
       obj: recipeObj,
-      userId: user.id_uzytkownika,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      userId: (user as any).id_uzytkownika,
     });
   };
 
@@ -146,8 +148,11 @@ export default function AddNewRecipe() {
             </p>
             <div className="py-7">
               {recipeIngredients.length > 0 ? (
-                recipeIngredients.map((item) => (
-                  <div className="flex gap-5 justify-start items-center my-2 py-2">
+                recipeIngredients.map((item, i) => (
+                  <div
+                    className="flex gap-5 justify-start items-center my-2 py-2"
+                    key={i}
+                  >
                     <div className="w-2 h-2 rounded-full bg-main"></div>
                     <p className="text-bgDark dark:text-bgWhite">
                       {item.ingredient.nazwa} - {item.amount}
