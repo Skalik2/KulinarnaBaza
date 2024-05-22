@@ -84,6 +84,7 @@ export default function AddNewRecipe() {
       }),
       zdjecie:  base64Image,
     };
+    console.log(recipeObj);
     sendRecipe({
       obj: recipeObj,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

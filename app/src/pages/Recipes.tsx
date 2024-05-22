@@ -50,7 +50,14 @@ export default function Recipes() {
             imageSrc="../../images/hero.jpg"
             title="Jeszcze dłuższa nazwa"
           />
-          {/* {data.map(item => <RecipeCard link="" imageSrc="http://localhost:5000/api/recipes/image/1" title={item.tytul} key={item.id} />)} */}
+          {data.map((item) => (
+            <RecipeCard
+              link=""
+              imageSrc="http://localhost:5000/api/recipes/image/4"
+              title={item.tytul}
+              key={item.id}
+            />
+          ))}
         </>
       )}
     </div>

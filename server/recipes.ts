@@ -37,7 +37,7 @@ module.exports = function (app: Express) {
         id = 1
       }
       console.log(id);
-      const filename = `/images/recipeid_${id}_thumbnail.png`;
+      const filename = `./images/recipeid_${id}_thumbnail.png`;
       let base64Data = req.body.zdjecie.replace(
         /^data:image\/jpeg;base64,/,
         ""
@@ -45,6 +45,7 @@ module.exports = function (app: Express) {
       base64Data = base64Data.replace(/^data:image\/png;base64,/, "");
       fs.writeFile(filename, base64Data, "base64", function (err: any) {
         if (err) {
+          console.log(err);
           throw new Error("Image could not be saved");
         } else {
           console.log(`Image ${filename} saved successfully`);

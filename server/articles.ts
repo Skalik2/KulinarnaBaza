@@ -36,7 +36,7 @@ module.exports = function (app: Express) {
             id = 1
           }
           console.log(id);
-          const filename = `images/article_${id}_thumbnail.png`;
+          const filename = `./images/article_${id}_thumbnail.png`;
           let base64Data = req.body.zdjecie.replace(
             /^data:image\/jpeg;base64,/,
             ""
