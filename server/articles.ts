@@ -3,6 +3,7 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const pool = require("./db");
 const fs = require("fs");
+import path = require("path");
 
 declare global {
   namespace Express {
@@ -21,6 +22,11 @@ module.exports = function (app: Express) {
         cookie: { secure: false },
       })
     );
+
+    app.get("/api/articles/image/:articleId", (req, res) => {
+      res.sendFile(path.join(__dirname, `../images/article_${req.params.articleId}_thumbnail.png`));
+    });
+  
 
     app.post("/api/articles/:userId", bodyParser.json(), async (req: any, res) => {
         try {
