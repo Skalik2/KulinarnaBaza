@@ -63,7 +63,7 @@ module.exports = function (app: Express) {
       ]);
       for (let i = 0; i < req.body.skladniki.length; i++) {
         await pool.query(
-          `INSERT INTO skladnik_w_przepisie VALUES (${id}, ${req.body.skladniki[i].id_skladnika}, ${req.body.skladniki[i].ilosc})`
+          `INSERT INTO skladnik_w_przepisie VALUES (${id}, ${req.body.skladniki[i].id_skladnika}, '${req.body.skladniki[i].ilosc}')`
         );
       }
       for (let j = 0; j < req.body.tagi.length; j++) {
