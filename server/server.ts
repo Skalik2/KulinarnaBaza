@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import bodyParser from "body-parser";
-
+import path from "path";
 const pool = require("./db");
 import cors from 'cors';
 const app: Express = express();
@@ -23,12 +23,15 @@ require('./ingredients')(app);
 require('./tags')(app);
 require('./articles')(app);
 require('./mealplanner')(app);
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.get("/api",(req: Request, res: Response) =>{
 
         res.json({"testServera": ["dziala", "nie dziala", "może dziala"]});
 
 })
+
+
 
 /*app.post("/api/insertTag", async (req: Request, res: Response) =>{
 

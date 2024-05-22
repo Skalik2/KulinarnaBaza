@@ -27,7 +27,7 @@ module.exports = function (app: Express) {
     async (req: any, res) => {
       try {
         await pool.query(
-          `INSERT INTO plan VALUES (${req.params.userId}, '${req.body.date.slice(0,9)}', ${req.body.id_przepisu} )`
+          `INSERT INTO plan VALUES (${req.params.userId}, '${req.body.date}', ${req.body.id_przepisu} )`
         );
 
         console.log(
@@ -57,11 +57,11 @@ module.exports = function (app: Express) {
         let result = []
         if (req.body.date !== undefined){
         result = await pool.query(
-          `SELECT * FROM plan WHERE plan.id_uzytkownika = ${req.params.userId} AND plan.data = '${req.body.date.slice(0,9)}'`
+          `SELECT plan.id_przepisu, przepis.tytul, plan.data FROM plan JOIN przepis on plan.id_przepisu = przepis.id_przepisu WHERE plan.id_uzytkownika = ${req.params.userId} AND plan.data = '${req.body.date}'`
         );}
         else {
         result = await pool.query(
-          `SELECT * FROM plan WHERE plan.id_uzytkownika = ${req.params.userId}`
+          `SELECT plan.id_przepisu, przepis.tytul, plan.data FROM plan JOIN przepis on plan.id_przepisu = przepis.id_przepisu WHERE plan.id_uzytkownika = ${req.params.userId}`
         );}
         
 
@@ -83,4 +83,29 @@ module.exports = function (app: Express) {
       }
     }
   );
+
+  app.delete("/api/mealplanner/:userId", bodyParser.json(), async (req: any, res) => {
+    try {
+       const result = await pool.query(
+        `DELETE FROM plan WHERE id_uzytkownika = ${req.params.userId} and id_przepisu = ${req.body.id_przepisu} and data = '${req.body.date}'`)
+
+        
+      res
+        .status(200)
+        .json({
+          response: `Recipe ${req.body.id_przepisu} removed from user ${req.params.userId}'s plan for ${req.body.date}`,
+        });
+    } catch (err) {
+      console.error(
+        `Recipe ${req.body.id_przepisu} could not be removed from user ${req.params.userId}'s plan for ${req.body.date}`,
+        err
+      );
+      res
+        .status(500)
+        .json({
+          error: `Recipe ${req.body.id_przepisu} could not be removed from user ${req.params.userId}'s plan for ${req.body.date}`,
+        });
+    }
+  }
+);
 };
