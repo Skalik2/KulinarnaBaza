@@ -10,7 +10,8 @@ node_modules
 
 # production
 /build
-server/dist
+./server/dist
+./server/images
 
 # misc
 .DS_Store

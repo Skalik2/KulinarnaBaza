@@ -5,6 +5,8 @@ import axios from "axios";
 import Modal from "../ui/Modal";
 import AddNewIngModal from "../ui/recipes/AddNewIngModal";
 import AddNewTagModal from "../ui/recipes/AddNewTagModal";
+import { useSendRecipe } from "../hooks/useSendRecipe";
+import { useQueryClient } from "@tanstack/react-query";
 
 export interface ingredientInterface {
   id_skladnik: number;
@@ -27,8 +29,12 @@ export default function AddNewRecipe() {
     handleSubmit,
     formState: { errors },
   } = useForm<FieldValues>();
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData(["user"]);
   const [ingredients, setIngredients] = useState<ingredientInterface[]>();
   const [recipeIngredients, setRecipeIngredients] = useState<recipeIng[]>([]);
+
+  const { isSuccess, sendRecipe } = useSendRecipe();
 
   const [tags, setTags] = useState<tagInterface[]>();
   const [recipeTags, setRecipeTags] = useState<tagInterface[]>([]);
@@ -61,13 +67,26 @@ export default function AddNewRecipe() {
   }, []);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    
-    //składniki trzeba przekształcic, bo są w złym formacie !!!!!!!!!!!!!!!!!!!
-
-    console.log(data);
-    console.log(recipeIngredients);
-    console.log(recipeTags);
-    console.log(base64Image);
+    const recipeObj = {
+      tytul: data.title,
+      opis: data.description,
+      czas_przygotowania: data.time,
+      cena: data.price,
+      skladniki: recipeIngredients.map((item) => {
+        return {
+          id_skladnika: item.ingredient.id_skladnik,
+          ilosc: item.amount,
+        };
+      }),
+      tagi: recipeTags.map((item) => {
+        return { id_tagu: item.id_tagu };
+      }),
+      zdjecie: "data:image/jpeg;base64," + base64Image,
+    };
+    sendRecipe({
+      obj: recipeObj,
+      userId: user.id_uzytkownika,
+    });
   };
 
   return (
@@ -125,22 +144,24 @@ export default function AddNewRecipe() {
             <p className="text-left dark:text-bgWhite">
               Składniki w przepisie:
             </p>
-            {recipeIngredients.length > 0 ? (
-              recipeIngredients.map((item) => (
-                <div className="flex gap-5 justify-start items-center my-2 py-8">
-                  <div className="w-2 h-2 rounded-full bg-main"></div>
+            <div className="py-7">
+              {recipeIngredients.length > 0 ? (
+                recipeIngredients.map((item) => (
+                  <div className="flex gap-5 justify-start items-center my-2 py-2">
+                    <div className="w-2 h-2 rounded-full bg-main"></div>
+                    <p className="text-bgDark dark:text-bgWhite">
+                      {item.ingredient.nazwa} - {item.amount}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="w-full py-10 flex justify-center items-center">
                   <p className="text-bgDark dark:text-bgWhite">
-                    {item.ingredient.nazwa} - {item.amount}
+                    Dodaj składniki przepisu
                   </p>
                 </div>
-              ))
-            ) : (
-              <div className="w-full py-10 flex justify-center items-center">
-                <p className="text-bgDark dark:text-bgWhite">
-                  Dodaj składniki przepisu
-                </p>
-              </div>
-            )}
+              )}
+            </div>
             <Modal>
               <Modal.Open opens="addIng">
                 <button
