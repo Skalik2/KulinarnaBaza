@@ -8,11 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const pool = require("./db");
 const fs = require("fs");
+const path_1 = __importDefault(require("path"));
 module.exports = function (app) {
     app.use(session({
         secret: "whatdoIwriteherepleasetellmetutorials",
@@ -20,6 +24,9 @@ module.exports = function (app) {
         saveUninitialized: true,
         cookie: { secure: false },
     }));
+    app.get("/api/recipes/image/:recipeId", (req, res) => {
+        res.sendFile(path_1.default.join(__dirname, `../images/recipeid_${req.params.recipeId}_thumbnail.png`));
+    });
     app.post("/api/recipes/:userId", bodyParser.json(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         try {
             let id = yield pool.query(`SELECT max(id_przepisu) FROM przepis`);
@@ -29,7 +36,7 @@ module.exports = function (app) {
                 id = 1;
             }
             console.log(id);
-            const filename = `images/recipeid_${id}_thumbnail.png`;
+            const filename = `/images/recipeid_${id}_thumbnail.png`;
             let base64Data = req.body.zdjecie.replace(/^data:image\/jpeg;base64,/, "");
             base64Data = base64Data.replace(/^data:image\/png;base64,/, "");
             fs.writeFile(filename, base64Data, "base64", function (err) {

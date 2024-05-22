@@ -3,6 +3,8 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const pool = require("./db");
 const fs = require("fs");
+import path from "path";
+
 
 declare global {
   namespace Express {
@@ -22,6 +24,10 @@ module.exports = function (app: Express) {
     })
   );
 
+  app.get("/api/recipes/image/:recipeId", (req, res) => {
+    res.sendFile(path.join(__dirname, `../images/recipeid_${req.params.recipeId}_thumbnail.png`));
+  });
+
   app.post("/api/recipes/:userId", bodyParser.json(), async (req: any, res) => {
     try {
       let id = await pool.query(`SELECT max(id_przepisu) FROM przepis`);
@@ -31,7 +37,7 @@ module.exports = function (app: Express) {
         id = 1
       }
       console.log(id);
-      const filename = `images/recipeid_${id}_thumbnail.png`;
+      const filename = `/images/recipeid_${id}_thumbnail.png`;
       let base64Data = req.body.zdjecie.replace(
         /^data:image\/jpeg;base64,/,
         ""
