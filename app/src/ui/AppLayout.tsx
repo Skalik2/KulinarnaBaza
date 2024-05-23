@@ -5,7 +5,7 @@ export default function AppLayout() {
   return (
     <div className="relative overflow-x-hidden w-full h-full" id="app">
       <Navigation />
-      <div className="">
+      <div id="outlet" className="">
         <Outlet />
       </div>
     </div>

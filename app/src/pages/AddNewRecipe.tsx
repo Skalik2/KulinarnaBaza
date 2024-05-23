@@ -113,14 +113,14 @@ export default function AddNewRecipe() {
             <FormInput
               id="time"
               type="text"
-              label="Czas przygotowania"
+              label="Czas przygotowania (min)"
               error={errors?.time?.message}
               register={register}
             />
             <FormInput
               id="price"
               type="text"
-              label="Szacowana cena dania"
+              label="Szacowana cena dania (zł)"
               error={errors?.price?.message}
               register={register}
             />
