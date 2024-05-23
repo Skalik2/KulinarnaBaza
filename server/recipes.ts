@@ -142,4 +142,26 @@ module.exports = function (app: Express) {
     }
   });
 
+   app.get("/api/recipes/byTag/:tagId", bodyParser.json(), async (req: any, res) => {
+    try {
+      const result = await pool.query(`SELECT * FROM przepis JOIN tag_w_przepisie on przepis.id_przepisu = tag_w_przepisie.id_przepisu WHERE tag_w_przepisie.id_tagu = ${req.params.tagId}`)
+      
+      res.status(200).json({ response: result.rows});
+    } catch (err) {
+      console.error(`Getting recipes by tag id: ${req.params.tagId} failed`, err);
+      res.status(500).json({ error: `Getting recipes by tag id: ${req.params.tagId} failed`});
+    }
+  });
+
+  app.get("/api/recipes/byIngredient/:ingredientId", bodyParser.json(), async (req: any, res) => {
+    try {
+      const result = await pool.query(`SELECT * FROM przepis JOIN skladnik_w_przepisie on przepis.id_przepisu = skladnik_w_przepisie.id_przepisu WHERE skladnik_w_przepisie.id_skladnika = ${req.params.ingredientId}`)
+      
+      res.status(200).json({ response: result.rows});
+    } catch (err) {
+      console.error(`Getting recipes by ingredient id: ${req.params.ingredientId} failed`, err);
+      res.status(500).json({ error: `Getting recipes by tag id: ${req.params.ingredientId} failed`});
+    }
+  });
+
 };
