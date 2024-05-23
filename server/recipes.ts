@@ -97,7 +97,7 @@ module.exports = function (app: Express) {
       const result = await pool.query(`SELECT * FROM przepis WHERE id_przepisu = ${req.params.recipeId}`)
       const views = result.rows[0].wyswietlenia + 1
       await pool.query(`UPDATE przepis SET wyswietlenia = ${views} WHERE id_przepisu = ${req.params.recipeId}`)
-      const ingredients = await pool.query(`SELECT * FROM skladnik_w_przepisie WHERE id_przepisu = ${req.params.recipeId}`)
+      const ingredients = await pool.query(`SELECT skladnik.id_skladnik, skladnik.nazwa, skladnik_w_przepisie.ilosc  FROM skladnik_w_przepisie JOIN skladnik ON skladnik_w_przepisie.id_skladnika = skladnik.id_skladnik WHERE skladnik_w_przepisie.id_przepisu = ${req.params.recipeId}`)
       res.status(200).json({ przepis: result.rows, skladniki: ingredients.rows });
     } catch (err) {
       console.error(`Getting recipe ${req.params.recipeId} failed`, err);
