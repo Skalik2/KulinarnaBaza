@@ -82,7 +82,7 @@ export default function AddNewRecipe() {
       tagi: recipeTags.map((item) => {
         return { id_tagu: item.id_tagu };
       }),
-      zdjecie:  base64Image,
+      zdjecie: base64Image,
     };
     console.log(recipeObj);
     sendRecipe({
@@ -112,14 +112,14 @@ export default function AddNewRecipe() {
             />
             <FormInput
               id="time"
-              type="text"
+              type="number"
               label="Czas przygotowania (min)"
               error={errors?.time?.message}
               register={register}
             />
             <FormInput
               id="price"
-              type="text"
+              type="number"
               label="Szacowana cena dania (zł)"
               error={errors?.price?.message}
               register={register}
@@ -194,8 +194,11 @@ export default function AddNewRecipe() {
 
             {recipeTags.length > 0 ? (
               <div className="flex flex-wrap justify-center items-center gap-5 py-8">
-                {recipeTags.map((item) => (
-                  <div className="px-3 py-2 rounded-lg bg-bgWhiteHover dark:bg-bgDarkHover text-bgDark dark:text-bgWhite ">
+                {recipeTags.map((item, i) => (
+                  <div
+                    key={i}
+                    className="px-3 py-2 rounded-lg bg-bgWhiteHover dark:bg-bgDarkHover text-bgDark dark:text-bgWhite "
+                  >
                     <p>{item.nazwa}</p>
                   </div>
                 ))}

@@ -52,7 +52,7 @@ function App() {
                 <Route path="login" element={<Login />} />
                 <Route path="signup" element={<Register />} />
                 <Route path="recipes" element={<Recipes />} />
-                <Route path="recipes/:id" element={<Recipe />} />
+                <Route path="recipes/:id/:title" element={<Recipe />} />
                 <Route path="recipes/add-new" element={<AddNewRecipe />} />
                 <Route path="articles" element={<Articles />} />
                 <Route path="planner" element={<MealPlanner />} />
