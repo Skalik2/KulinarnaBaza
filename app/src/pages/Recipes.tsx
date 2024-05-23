@@ -49,7 +49,7 @@ export default function Recipes() {
         </div>
       ) : (
         <div className=" flex flex-wrap  md:pt-[72px] justify-center gap-4 mx-auto max-w-7xl">
-          {data.map((item) => (
+          {data.map((item:any) => (
             <RecipeCard
               link={`/recipes/${item.id_przepisu}/${item.tytul.replace(
                 /\s+/g,
