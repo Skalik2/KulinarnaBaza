@@ -12,12 +12,14 @@ interface AddNewIngModalProps {
   onCloseModal: () => void;
   setRecipeIngredients: Dispatch<SetStateAction<recipeIng[]>>;
   ingredients: ingredientInterface[] | undefined;
+  filter?: boolean;
 }
 
 export default function AddNewIngModal({
   onCloseModal,
   ingredients,
   setRecipeIngredients,
+  filter,
 }: AddNewIngModalProps) {
   const [selectedIng, setSelectedIng] = useState<ingredientInterface>();
   const { forceUpdate } = useForceUpdate();
@@ -36,18 +38,30 @@ export default function AddNewIngModal({
   );
 
   function addIng() {
-    setRecipeIngredients((ing) => [
-      ...ing,
-      { ingredient: selectedIng as ingredientInterface, amount: ingAmount },
-    ]);
+    if (filter) {
+      setRecipeIngredients(
+        selectedIng ? [{ ingredient: selectedIng, amount: "" }] : []
+      );
+    } else {
+      setRecipeIngredients((ing) => [
+        ...ing,
+        { ingredient: selectedIng as ingredientInterface, amount: ingAmount },
+      ]);
+    }
     onCloseModal();
   }
 
   return (
     <div className="w-full flex flex-col justify-center items-center gap-2">
-      <p className="text-xl text-bgDark dark:text-bgWhite">
-        Wybierz składnik z listy oraz wprowadź jego ilość
-      </p>
+      {filter ? (
+        <p className="text-xl text-bgDark dark:text-bgWhite">
+          Wybierz składnik który posiadasz:
+        </p>
+      ) : (
+        <p className="text-xl text-bgDark dark:text-bgWhite">
+          Wybierz składnik z listy oraz wprowadź jego ilość
+        </p>
+      )}
       <input
         id="ingredient"
         className="border-none focus:outline-none px-3 py-2 w-full bg-bgWhite dark:bg-bgDarkHover  dark:text-bgWhite text-bgDark"
@@ -77,26 +91,39 @@ export default function AddNewIngModal({
           </button>
         )}
       </div>
-      <div className="w-full">
-        <label className="dark:text-bgWhite">Wprowadź ilość:</label>
-        <input
-          id="amount"
-          className="border-none focus:outline-none px-3 py-2 w-full bg-bgWhite dark:bg-bgDarkHover  dark:text-bgWhite text-bgDark"
-          type="text"
-          placeholder="Ilość"
-          value={ingAmount}
-          onChange={(e) => setIngAmount(e.target.value)}
-        />
-        <div className="h-[1px] w-full bg-main"></div>
-      </div>
-      <button
-        type="button"
-        onClick={addIng}
-        className="w-[300px] bg-main hover:bg-mainHover py-2 text-white uppercase tracking-wide  rounded-full transition-all duration-300 mt-3"
-        disabled={!selectedIng || !ingAmount}
-      >
-        Dodaj {selectedIng ? `${selectedIng.nazwa}` : "składnik"}
-      </button>
+      {!filter && (
+        <div className="w-full">
+          <label className="dark:text-bgWhite">Wprowadź ilość:</label>
+          <input
+            id="amount"
+            className="border-none focus:outline-none px-3 py-2 w-full bg-bgWhite dark:bg-bgDarkHover  dark:text-bgWhite text-bgDark"
+            type="text"
+            placeholder="Ilość"
+            value={ingAmount}
+            onChange={(e) => setIngAmount(e.target.value)}
+          />
+          <div className="h-[1px] w-full bg-main"></div>
+        </div>
+      )}
+      {filter ? (
+        <button
+          type="button"
+          onClick={addIng}
+          className="w-[300px] bg-main hover:bg-mainHover py-2 text-white uppercase tracking-wide  rounded-full transition-all duration-300 mt-3"
+          disabled={!selectedIng}
+        >
+          Zawiera {selectedIng ? `${selectedIng.nazwa}` : "składnik"}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={addIng}
+          className="w-[300px] bg-main hover:bg-mainHover py-2 text-white uppercase tracking-wide  rounded-full transition-all duration-300 mt-3"
+          disabled={!selectedIng || !ingAmount}
+        >
+          Dodaj {selectedIng ? `${selectedIng.nazwa}` : "składnik"}
+        </button>
+      )}
     </div>
   );
 }

@@ -6,12 +6,14 @@ interface AddNewtagModalProps {
   onCloseModal: () => void;
   setRecipeTags: Dispatch<SetStateAction<tagInterface[]>>;
   tags: tagInterface[] | undefined;
+  filter?: boolean;
 }
 
 export default function AddNewTagModal({
   onCloseModal,
   tags,
   setRecipeTags,
+  filter,
 }: AddNewtagModalProps) {
   const [selectedTag, setSelectedTag] = useState<tagInterface>();
   const { forceUpdate } = useForceUpdate();
@@ -29,7 +31,11 @@ export default function AddNewTagModal({
   );
 
   function addIng() {
-    setRecipeTags((tag) => [...tag, selectedTag as tagInterface]);
+    if (filter) {
+      setRecipeTags(selectedTag ? [selectedTag] : []);
+    } else {
+      setRecipeTags((tag) => [...tag, selectedTag as tagInterface]);
+    }
     onCloseModal();
   }
 
@@ -74,7 +80,7 @@ export default function AddNewTagModal({
         className="w-[300px] bg-main hover:bg-mainHover py-2 text-white uppercase tracking-wide  rounded-full transition-all duration-300 mt-3"
         disabled={!selectedTag}
       >
-        Dodaj {selectedTag ? `${selectedTag.nazwa}` : "tag"}
+        Wybierz {selectedTag ? `${selectedTag.nazwa}` : "tag"}
       </button>
     </div>
   );

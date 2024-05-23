@@ -4,7 +4,7 @@ import { useGetRecipe } from "../hooks/useGetRecipe";
 
 export default function Recipe() {
   const params = useParams();
-  const { data, isLoading } = useGetRecipe("4");
+  const { data, isLoading } = useGetRecipe(params.id!);
   console.log(params.id);
   console.log(data);
   //tu trzeba wykonac requesta na to id przepisu, a pozniej po prostu to wyswitlić, powodzenia
