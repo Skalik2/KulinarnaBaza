@@ -22,7 +22,7 @@ const Carousel: React.FC = () => {
         breakpoint: 768,
         settings: {
           slidesToShow: 1,
-        slidesToScroll: 1,
+          slidesToScroll: 1,
         },
       },
     ],
@@ -35,7 +35,7 @@ const Carousel: React.FC = () => {
   const goToNext = () => {
     sliderRef.current?.slickNext();
   };
-  console.log(data)
+  console.log(data);
   return (
     <div className=" pt-16 pb-10 bg-bgWhite dark:bg-bgDark dark:text-bgWhite text-center">
       <h1 className=" text-5xl py-2">Nasze najlepsze dania</h1>
@@ -50,18 +50,23 @@ const Carousel: React.FC = () => {
           &lt;
         </button>
         {isLoading ? (
-        <div className="h-screen w-full flex justify-center items-center">
-          <Spinner />
-        </div>
-      ) : (
-        <Slider ref={sliderRef} {...settings}>
-          {firstFive.map((recipe:any) => (
-            <div className="px-4">
-              {<img src={`http://localhost:5000/api/recipes/image/${recipe.id_przepisu}`} alt="Photo 1" />}
+          <div className="h-screen w-full flex justify-center items-center">
+            <Spinner />
           </div>
-          ))}
-        </Slider>
-      )}
+        ) : (
+          <Slider ref={sliderRef} {...settings}>
+            {firstFive.map((recipe: any) => (
+              <div className="px-4">
+                {
+                  <img
+                    src={`http://localhost:5000/api/recipes/image/${recipe.id_przepisu}`}
+                    alt="Photo 1"
+                  />
+                }
+              </div>
+            ))}
+          </Slider>
+        )}
         <button
           className=" absolute z-10 top-1/3 text-white text-4xl right-4 rounded-full bg-bgDark opacity-75 font-bold p-1 w-11 h-11 dark:bg-bgWhite dark:text-bgDark"
           onClick={goToNext}
