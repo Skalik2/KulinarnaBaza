@@ -6,20 +6,21 @@ import Spinner from "../ui/Spinner";
 import { Link } from "react-router-dom";
 import useDarkMode from "../hooks/useDarkMode";
 import { Pagination } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
-import { useForceUpdate } from "../hooks/useForceUpdate";
+import { useEffect, useState } from "react";
 import Modal from "../ui/Modal";
 import AddNewTagModal from "../ui/recipes/AddNewTagModal";
 import { ingredientInterface, recipeIng, tagInterface } from "./AddNewRecipe";
 import axios from "axios";
 import AddNewIngModal from "../ui/recipes/AddNewIngModal";
+import { useGetBy } from "../hooks/useGetBy";
 
 export default function Recipes() {
   const queryClient = useQueryClient();
-  const { forceUpdate } = useForceUpdate();
   const userAuth = queryClient.getQueryData(["user"]) !== undefined;
   const { data: recipesData, isLoading } = useGetRecipes();
-  const data = useRef(recipesData);
+  const { mutate: getByFn, data: dataBy, isSuccess } = useGetBy();
+  // const data = useRef(recipesData);
+  const [data, setData] = useState(recipesData);
 
   const { isDarkMode } = useDarkMode();
   const [page, setPage] = useState(1);
@@ -35,36 +36,59 @@ export default function Recipes() {
 
   useEffect(
     function () {
-      let recipes = recipesData;
-      console.log(recipes);
-
-      if (label) {
-        recipes = recipes.filter((item: any) =>
-          item.tytul.toUpperCase().includes(label.toUpperCase())
-        );
-      }
-
-      if (recipesData) {
-        recipes = recipes.sort((a: any, b: any) => {
-          const idA = parseFloat(a.id_przepisu);
-          const idB = parseFloat(b.id_przepisu);
-
-          if (idA < idB) {
-            return -1;
-          } else if (idA > idB) {
-            return 1;
-          } else {
-            return 0;
-          }
+      if (selectedIng.length > 0 && selectedTag.length === 0) {
+        getByFn({ ing: selectedIng[0].ingredient.id_skladnik, tag: undefined });
+      } else if (selectedIng.length === 0 && selectedTag.length > 0) {
+        getByFn({ ing: undefined, tag: selectedTag[0].id_tagu });
+      } else if (selectedIng.length > 0 && selectedTag.length > 0) {
+        getByFn({
+          ing: selectedIng[0].ingredient.id_skladnik,
+          tag: selectedTag[0].id_tagu,
         });
-
-        data.current = recipes;
-        setTotalPages(Math.ceil(data.current.length / ITEMS_ON_PAGE));
-        forceUpdate();
+        console.log("oba na raz fn");
+        console.log(dataBy);
       }
     },
-    [forceUpdate, label, recipesData]
+    [selectedIng, selectedTag, getByFn]
   );
+
+  useEffect(() => {
+    let recipes = recipesData;
+
+    if (dataBy && (selectedIng.length > 0 || selectedTag.length > 0)) {
+      recipes = dataBy;
+    }
+
+    if (label) {
+      recipes = recipes?.filter((item: any) =>
+        item.tytul.toUpperCase().includes(label.toUpperCase())
+      );
+    }
+
+    recipes = recipes?.sort((a: any, b: any) => {
+      const idA = parseFloat(a.id_przepisu);
+      const idB = parseFloat(b.id_przepisu);
+
+      if (idA < idB) {
+        return -1;
+      } else if (idA > idB) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
+    setData(recipes);
+    setTotalPages(Math.ceil(data?.length / ITEMS_ON_PAGE));
+  }, [
+    label,
+    recipesData,
+    setData,
+    data?.length,
+    dataBy,
+    selectedIng.length,
+    selectedTag.length,
+  ]);
 
   useEffect(function () {
     axios.get("http://localhost:5000/api/ingredients").then((res) => {
@@ -85,6 +109,7 @@ export default function Recipes() {
   };
 
   console.log(data);
+  console.log(dataBy);
 
   return (
     <div className=" bg-bgWhite dark:bg-bgDark mt-10 py-16">
@@ -168,6 +193,8 @@ export default function Recipes() {
                 onClick={() => {
                   setSelectedIng([]);
                   setSelectedTag([]);
+                  setLabel("");
+                  setData(recipesData);
                 }}
               >
                 Wyczyść filtry
@@ -189,14 +216,14 @@ export default function Recipes() {
           </div>
         </div>
       </div>
-      {isLoading && !data.current ? (
+      {isSuccess && isLoading && !data ? (
         <div className="h-screen w-full flex justify-center items-center">
           <Spinner />
         </div>
       ) : (
         <>
           <div className=" flex flex-wrap  md:pt-[72px] justify-center gap-4 mx-auto max-w-7xl">
-            {data.current
+            {data
               ?.slice(
                 (page - 1) * ITEMS_ON_PAGE,
                 (page - 1) * ITEMS_ON_PAGE + ITEMS_ON_PAGE

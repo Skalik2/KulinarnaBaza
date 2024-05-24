@@ -4,6 +4,7 @@ import FormInput from "../ui/FormInput";
 import { Link } from "react-router-dom";
 import { DarkModeContext } from "../context/DarkModeContext";
 import axios from "axios";
+import toast from "react-hot-toast";
 axios.defaults.withCredentials = true;
 
 export default function Login() {
@@ -15,7 +16,6 @@ export default function Login() {
   const { isDarkMode } = useContext(DarkModeContext);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
     axios
       .post(
         "http://localhost:5000/api/login",
@@ -27,9 +27,11 @@ export default function Login() {
           withCredentials: true,
         }
       )
-      .then((res: any) => {
-        console.log(res);
+      .then(() => {
         window.location.href = "/";
+      })
+      .catch(() => {
+        toast.error("Podaj poprawne dane");
       });
   };
   return (
