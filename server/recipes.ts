@@ -180,6 +180,31 @@ module.exports = function (app: Express) {
     }
   );
 
+  app.delete(
+    "/api/recipes/:userId/:recipeId",
+    bodyParser.json(),
+    async (req: any, res) => {
+      try {
+          await pool.query(`DELETE FROM ulubione WHERE id_uzytkownika = ${req.params.userId} and id_przepisu = ${req.params.recipeId}`)
+        res
+          .status(200)
+          .json({
+            response: `Recipe ${req.params.recipeId} deleted from user ${req.params.userId}'s favourites`,
+          });
+      } catch (err) {
+        console.error(
+          `Removing recipe from user ${req.params.userId}'s favourite failed`,
+          err
+        );
+        res
+          .status(500)
+          .json({
+            error: `Removing recipe from user ${req.params.userId}'s favourite failed`,
+          });
+      }
+    }
+  );
+
   app.get(
     "/api/recipes/:userId/getfav",
     bodyParser.json(),
