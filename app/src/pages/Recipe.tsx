@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetRecipe } from "../hooks/useGetRecipe";
 import Spinner from "../ui/Spinner";
 import { FaRegHeart } from "react-icons/fa";
@@ -10,6 +10,12 @@ import { SlEye } from "react-icons/sl";
 import { IoPricetagOutline } from "react-icons/io5";
 import { useGetBy } from "../hooks/useGetBy";
 import RecipeCard from "../ui/recipes/RecipeCard";
+import { useAddFavorite } from "../hooks/useAddFavorite";
+import { useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { useGetFav } from "../hooks/useGetFav";
+import { useRemoveFav } from "../hooks/useRemoveFav";
+import { useForceUpdate } from "../hooks/useForceUpdate";
 
 interface recipeInterface {
   autor: number;
@@ -41,11 +47,39 @@ interface dataInterface {
 
 export default function Recipe() {
   const params = useParams();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const user: { id_uzytkownika: string } | undefined = queryClient.getQueryData(
+    ["user"]
+  );
   const { mutate: getByFn, data: dataBy, isSuccess } = useGetBy();
+  const { addFav } = useAddFavorite();
+  const { forceUpdate } = useForceUpdate();
+  const { removeFav } = useRemoveFav();
   const { data, isLoading } = useGetRecipe(params.id!);
+  const { data: userFav, isLoading: isLoadingFav } = useGetFav(
+    user?.id_uzytkownika
+  );
   const recipeData = data as dataInterface;
-  console.log(params.id);
-  console.log(data);
+  const [isFav, setIsFav] = useState(
+    userFav?.some(
+      (item: any) => item.id_przepisu === recipeData.przepis[0].id_przepisu
+    )
+  );
+
+  useEffect(() => {
+    if (
+      userFav &&
+      recipeData?.przepis?.[0] &&
+      userFav.some(
+        (item: any) => item.id_przepisu === recipeData.przepis[0].id_przepisu
+      )
+    ) {
+      setIsFav(true);
+    } else {
+      setIsFav(false);
+    }
+  }, [userFav, recipeData]);
 
   useEffect(() => {
     if (recipeData && recipeData.tagi.length > 0) {
@@ -69,7 +103,20 @@ export default function Recipe() {
     }
 
     return [];
-  }, [dataBy, isSuccess, recipeData.przepis]);
+  }, [dataBy, isSuccess, recipeData?.przepis]);
+
+  function handleFav() {
+    if (!user) {
+      navigate("/login");
+      toast.error("Zaloguj się, aby dodać przepis do ulubionych");
+    } else {
+      if (isFav) {
+        removeFav({ recipeId: recipeData.przepis[0].id_przepisu });
+      } else {
+        addFav({ recipeId: recipeData.przepis[0].id_przepisu });
+      }
+    }
+  }
 
   const descriptionWithLineBreaks = recipeData?.przepis[0].opis
     .split("\n")
@@ -100,8 +147,12 @@ export default function Recipe() {
               <h3 className="font-semibold text-3xl md:text-4xl text-bgDark dark:text-bgWhite">
                 {recipeData.przepis[0].tytul}
               </h3>
-              <button className="text-3xl text-red-500 p-3 hover:text-mainHover transition-colors duration-300">
-                <FaRegHeart />
+              <button
+                onClick={handleFav}
+                className="text-3xl text-red-500 p-3 hover:text-mainHover transition-colors duration-300"
+                disabled={isLoadingFav}
+              >
+                {isFav ? <FaHeart /> : <FaRegHeart />}
               </button>
             </div>
           </div>
