@@ -114,9 +114,12 @@ module.exports = function (app: Express) {
         const ingredients = await pool.query(
           `SELECT skladnik.id_skladnik, skladnik.nazwa, skladnik_w_przepisie.ilosc  FROM skladnik_w_przepisie JOIN skladnik ON skladnik_w_przepisie.id_skladnika = skladnik.id_skladnik WHERE skladnik_w_przepisie.id_przepisu = ${req.params.recipeId}`
         );
+        const tags = await pool.query(
+          `SELECT tag.id_tagu, tag.nazwa FROM tag_w_przepisie JOIN tag ON tag_w_przepisie.id_tagu = tag.id_tagu WHERE tag_w_przepisie.id_przepisu = ${req.params.recipeId}`
+        );
         res
           .status(200)
-          .json({ przepis: result.rows, skladniki: ingredients.rows });
+          .json({ przepis: result.rows, skladniki: ingredients.rows, tagi: tags.rows });
       } catch (err) {
         console.error(`Getting recipe ${req.params.recipeId} failed`, err);
         res.status(500).json({ error: "Getting recipe failed" });
