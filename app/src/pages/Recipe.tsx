@@ -63,7 +63,7 @@ export default function Recipe() {
   const recipeData = data as dataInterface;
   const [isFav, setIsFav] = useState(
     userFav?.some(
-      (item: any) => item.id_przepisu === recipeData.przepis[0].id_przepisu
+      (item: any) => item.id_przepisu === recipeData?.przepis[0].id_przepisu
     )
   );
 
@@ -97,7 +97,7 @@ export default function Recipe() {
           return idB - idA;
         })
         .filter(
-          (item: any) => item.id_przepisu !== recipeData.przepis[0].id_przepisu
+          (item: any) => item.id_przepisu !== recipeData?.przepis[0].id_przepisu
         )
         .slice(0, 3);
     }
