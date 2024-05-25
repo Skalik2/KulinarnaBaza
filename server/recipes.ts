@@ -284,9 +284,7 @@ module.exports = function (app: Express) {
     async (req: any, res) => {
       try {
         const result =
-          await pool.query(`SELECT * FROM public.przepis join skladnik_w_przepisie on przepis.id_przepisu = skladnik_w_przepisie.id_przepisu join tag_w_przepisie on tag_w_przepisie.id_przepisu = przepis.id_przepisu
-      where skladnik_w_przepisie.id_skladnika = ${req.body.id_skladnika} and tag_w_przepisie.id_tagu = ${req.body.id_tagu}
-      `);
+          await pool.query(`SELECT * FROM `);
 
         res.status(200).json({ response: result.rows });
       } catch (err) {
@@ -302,4 +300,27 @@ module.exports = function (app: Express) {
       }
     }
   );
+
+  app.get(
+    "/api/topRecipes",
+    bodyParser.json(),
+    async (req: any, res) => {
+      try {
+        const result =
+          await pool.query(`SELECT * FROM przepis ORDER BY wyswietlenia DESC LIMIT 10`);
+
+        res.status(200).json({ response: result.rows });
+      } catch (err) {
+        console.error(
+          `Getting top 10 recipes failed`,
+          err
+        );
+        res
+          .status(500)
+          .json({
+            error: `Getting top 10 recipes failed`,
+          });
+      }
+    }
+  )
 };
