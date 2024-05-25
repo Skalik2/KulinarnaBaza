@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetRecipe } from "../hooks/useGetRecipe";
 import Spinner from "../ui/Spinner";
@@ -15,7 +15,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useGetFav } from "../hooks/useGetFav";
 import { useRemoveFav } from "../hooks/useRemoveFav";
-import { useForceUpdate } from "../hooks/useForceUpdate";
+import { GiCook } from "react-icons/gi";
+import { useGetRecipeComments } from "../hooks/useGetRecipeComments";
+import { useAddRecipeComment } from "../hooks/useAddRecipeComment";
 
 interface recipeInterface {
   autor: number;
@@ -54,7 +56,6 @@ export default function Recipe() {
   );
   const { mutate: getByFn, data: dataBy, isSuccess } = useGetBy();
   const { addFav } = useAddFavorite();
-  const { forceUpdate } = useForceUpdate();
   const { removeFav } = useRemoveFav();
   const { data, isLoading } = useGetRecipe(params.id!);
   const { data: userFav, isLoading: isLoadingFav } = useGetFav(
@@ -66,6 +67,13 @@ export default function Recipe() {
       (item: any) => item.id_przepisu === recipeData?.przepis[0].id_przepisu
     )
   );
+
+  const { addComment } = useAddRecipeComment();
+  const { data: comments, isLoading: isLoadingComments } = useGetRecipeComments(
+    recipeData?.przepis[0].id_przepisu
+  );
+  console.log(comments);
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
     if (
@@ -116,6 +124,14 @@ export default function Recipe() {
         addFav({ recipeId: recipeData.przepis[0].id_przepisu });
       }
     }
+  }
+
+  function handleAddComment() {
+    addComment({
+      recipeID: recipeData.przepis[0].id_przepisu,
+      commentBody: comment,
+    });
+    setComment("");
   }
 
   const descriptionWithLineBreaks = recipeData?.przepis[0].opis
@@ -249,11 +265,62 @@ export default function Recipe() {
             </div>
           </div>
 
-          <div className="p-4 my-14 flex flex-col justify-center items-center gap-10">
+          <div className="p-4 my-14 flex flex-col justify-center items-center gap-10 w-full">
             <p className="text-lg md:text-2xl text-bgDark dark:text-bgWhite">
               Komentarze <span className="text-main">do przepisu</span>
             </p>
-            <p>dupa</p>
+            <div className="flex p-4 md400:px-16 sm:px-20 md:px-32 flex-col justify-end items-end w-full gap-5">
+              <div className="w-full  flex justify-center items-center gap-10">
+                <span className="hidden sm:block text-2xl text-main rounded-full p-2 border border-main">
+                  <GiCook />
+                </span>
+                <div className="relative h-[50px] w-full">
+                  <input
+                    id="label"
+                    placeholder="Treść komentarza"
+                    className="border-none focus:outline-none  px-3 py-2 w-full bg-transparent  dark:text-bgWhite text-bgDark"
+                    type="text"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                  <div className="absolute h-[1px] w-full bg-main"></div>
+                </div>
+              </div>
+              <button
+                onClick={handleAddComment}
+                className="w-[300px] bg-main hover:bg-mainHover py-2 text-white uppercase tracking-wide  rounded-full transition-all duration-300 mt-3"
+              >
+                Dodaj komentarz
+              </button>
+            </div>
+            <div className="flex flex-col justify-center items-center p-4 md400:px-16 sm:px-20 md:px-32 w-full">
+              {isLoadingComments ? (
+                <p>Wczytywanie komentarzy</p>
+              ) : comments.length === 0 ? (
+                <p>Ten przepis nie ma jeszcze komentarzy</p>
+              ) : (
+                <div className="flex flex-col justify-start items-start w-full gap-12">
+                  {comments
+                    .slice()
+                    .reverse()
+                    .slice(0, 10)
+                    .map((item) => (
+                      <>
+                        <div className="flex justify-center items-center gap-5 max-w-full">
+                          <span className="self-start block text-2xl text-main rounded-full  p-2 border border-main">
+                            <GiCook />
+                          </span>
+                          <div className="flex flex-col justify-center items-start gap-5 text-bgDark dark:text-bgWhite">
+                            <p className="text-sm font-medium">Użytkownik</p>
+                            <p className="text-wrap break-words">{item.opis}</p>
+                          </div>
+                        </div>
+                        <div className="h-[1px] w-full bg-slate-200 dark:bg-stone-800"></div>
+                      </>
+                    ))}{" "}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
