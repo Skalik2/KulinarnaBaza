@@ -108,7 +108,7 @@ export default function Articles() {
             <div className="relative h-[50px] w-full">
               <input
                 id="label"
-                placeholder="Wyszukaj przepis"
+                placeholder="Wyszukaj artykuł"
                 className="border-none focus:outline-none  px-3 py-2 w-full bg-transparent  dark:text-bgWhite text-bgDark"
                 type="text"
                 value={label}
