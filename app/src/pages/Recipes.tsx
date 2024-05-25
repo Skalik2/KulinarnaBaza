@@ -106,6 +106,7 @@ export default function Recipes() {
 
   const handleChangePage = (_e: any, newPage: number) => {
     setPage(newPage);
+    window.scrollTo(0, 550);
   };
 
   console.log(data);

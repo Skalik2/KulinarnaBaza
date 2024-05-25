@@ -50,6 +50,7 @@ export default function Favorite() {
 
   const handleChangePage = (_e: any, newPage: number) => {
     setPage(newPage);
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -60,7 +61,7 @@ export default function Favorite() {
             Twoje ulubione <span className="text-main">przepisy</span>
           </h3>
           <p className="ml-3 mt-1 hidden md:block">
-            Liczba ulubionych przepisów: {data.length}
+            Liczba ulubionych przepisów: {data?.length}
           </p>
         </div>
         <div>
