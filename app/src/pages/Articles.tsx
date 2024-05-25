@@ -45,19 +45,6 @@ export default function Articles() {
       );
     }
 
-    // recipes = recipes?.sort((a: any, b: any) => {
-    //   const idA = parseFloat(a.id_przepisu);
-    //   const idB = parseFloat(b.id_przepisu);
-
-    //   if (idA < idB) {
-    //     return -1;
-    //   } else if (idA > idB) {
-    //     return 1;
-    //   } else {
-    //     return 0;
-    //   }
-    // });
-
     setData(articles);
     setTotalPages(Math.ceil(data?.length / ITEMS_ON_PAGE));
   }, [articlesData, label, data?.length, selectedFilter]);
@@ -111,7 +98,7 @@ export default function Articles() {
             <select
               value={selectedFilter}
               onChange={(e) => setSelectedFilter(e.target.value)}
-              className="outline-none cursor-pointer p-2 border bg-transparent border-main rounded"
+              className="outline-none cursor-pointer p-2 border bg-transparent border-main rounded text-bgDark dark:text-stone-400"
             >
               <option value="date-asc">Od najstarszego</option>
               <option value="date-desc">Od najnowszego</option>
@@ -148,7 +135,7 @@ export default function Articles() {
                 <Article
                   imageSrc={`http://localhost:5000/api/articles/image/${item.id_artykulu}`}
                   title={item.tytul}
-                  author="to nie dziala"
+                  author={item.autor}
                   date={new Date(item.data_publikacji).toLocaleDateString()}
                   link={`/articles/${item.id_artykulu}/${item.tytul.replace(
                     /\s+/g,

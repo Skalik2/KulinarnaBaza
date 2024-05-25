@@ -127,11 +127,15 @@ export default function Recipe() {
   }
 
   function handleAddComment() {
-    addComment({
-      recipeID: recipeData.przepis[0].id_przepisu,
-      commentBody: comment,
-    });
-    setComment("");
+    if (user) {
+      addComment({
+        recipeID: recipeData.przepis[0].id_przepisu,
+        commentBody: comment,
+      });
+      setComment("");
+    } else {
+      toast.error("Zaloguj się, aby dodać komentarz");
+    }
   }
 
   const descriptionWithLineBreaks = recipeData?.przepis[0].opis
@@ -311,7 +315,7 @@ export default function Recipe() {
                             <GiCook />
                           </span>
                           <div className="flex flex-col justify-center items-start gap-5 text-bgDark dark:text-bgWhite">
-                            <p className="text-sm font-medium">Użytkownik</p>
+                            <p className="text-sm font-medium">{item.imie}</p>
                             <p className="text-wrap break-words">{item.opis}</p>
                           </div>
                         </div>
