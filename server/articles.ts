@@ -73,14 +73,24 @@ module.exports = function (app: Express) {
   app.get("/api/articles", bodyParser.json(), async (req: any, res) => {
     try {
       const result = await pool.query("SELECT * FROM artykul");
-      let tab = []
+      let tab = [];
       for (let n = 0; n < result.rows.length; n++) {
-        const user = await pool.query("SELECT imie from uzytkownik WHERE id_uzytkownika=$1", [result.rows[n].autor])
-        if (user.rowCount != 1){
+        const user = await pool.query(
+          "SELECT imie from uzytkownik WHERE id_uzytkownika=$1",
+          [result.rows[n].autor]
+        );
+        if (user.rowCount != 1) {
           res.status(401).json({ response: "Internal user name get error!" });
           return;
         }
-        tab.push({"id_artykulu" : result.rows[n].id_artykulu, "tytul" : result.rows[n].tytul, "opis" : result.rows[n].opis, "zdjecie" : result.rows[n].zdjecie, "autor" : user.rows[0].imie})
+        tab.push({
+          id_artykulu: result.rows[n].id_artykulu,
+          tytul: result.rows[n].tytul,
+          opis: result.rows[n].opis,
+          zdjecie: result.rows[n].zdjecie,
+          autor: user.rows[0].imie,
+          data_publikacji: result.rows[0].data_publikacji,
+        });
       }
       res.status(200).json({ response: tab });
     } catch (err) {
@@ -89,22 +99,33 @@ module.exports = function (app: Express) {
     }
   });
 
-  app.post("/api/articleDetails", bodyParser.json(), async (req : any, res) => {
+  app.post("/api/articleDetails", bodyParser.json(), async (req: any, res) => {
     try {
       const { articleID } = req.body;
 
       const article = await pool.query(
-          "SELECT tytul, opis, zdjecie, autor FROM public.artykul WHERE id_artykulu = $1",
-          [articleID]);
-      if (article.rowCount != 1){
-        res.status(401).json({ response: "Article with that id does not exist!" });
+        "SELECT tytul, opis, zdjecie, autor, data_publikacji, id_artykulu FROM public.artykul WHERE id_artykulu = $1",
+        [articleID]
+      );
+      if (article.rowCount != 1) {
+        res
+          .status(401)
+          .json({ response: "Article with that id does not exist!" });
         return;
       }
-      const user = await pool.query("SELECT imie from uzytkownik WHERE id_uzytkownika=$1", [article.rows[0].autor])
+      const user = await pool.query(
+        "SELECT imie from uzytkownik WHERE id_uzytkownika=$1",
+        [article.rows[0].autor]
+      );
 
-      res.status(200).json( {"tytul" : article.rows[0].tytul, "opis" : article.rows[0].opis, "zdjecie" : article.rows[0].zdjecie, "autor" : user.rows[0].imie} );
-    }
-    catch (err) {
+      res.status(200).json({
+        tytul: article.rows[0].tytul,
+        opis: article.rows[0].opis,
+        zdjecie: article.rows[0].zdjecie,
+        autor: user.rows[0].imie,
+        data_publikacji: article.rows[0].data_publikacji,
+      });
+    } catch (err) {
       console.error("Error when getting article comments:", err);
       res.status(500).json({ error: "Error when getting comments!" });
     }
