@@ -95,8 +95,12 @@ module.exports = function(app : Express) {
 
             let tab = []
             for (let n = 0; n < result1.rows.length; n++) {
-                // TODO : nazwa zamiast id, gotta go fast for now
-                tab.push({"uzytkownik": result1.rows[n].id_uzytkownika, "opis": result1.rows[n].opis})
+                const user = await pool.query("SELECT imie from uzytkownik WHERE id_uzytkownika=$1", [result1.rows[n].id_uzytkownika])
+                if (user.rowCount != 1){
+                    res.status(401).json({ response: "Internal user name get error!" });
+                    return;
+                }
+                tab.push({"imie" : user.rows[0].imie, "opis" : result1.rows[n].opis})
             }
 
             res.status(200).json(tab);
@@ -114,18 +118,21 @@ module.exports = function(app : Express) {
                 "SELECT id_artykulu FROM public.artykul WHERE id_artykulu = $1",
                 [articleID]);
             if (recipe.rowCount != 1){
-                res.status(401).json({ response: "Article with that id does not exist!!" });
+                res.status(401).json({ response: "Article with that id does not exist!" });
                 return;
             }
-
             const result1 = await pool.query(
                 `SELECT * FROM public.komentarz WHERE id_artykulu = ${articleID};`
             );
 
             let tab = []
             for (let n = 0; n < result1.rows.length; n++) {
-                // TODO : nazwa zamiast id, gotta go fast for now
-                tab.push({"uzytkownik" : result1.rows[n].id_uzytkownika, "opis" : result1.rows[n].opis})
+                const user = await pool.query("SELECT imie from uzytkownik WHERE id_uzytkownika=$1", [result1.rows[n].id_uzytkownika])
+                if (user.rowCount != 1){
+                    res.status(401).json({ response: "Internal user name get error!" });
+                    return;
+                }
+                tab.push({"imie" : user.rows[0].imie, "opis" : result1.rows[n].opis})
             }
 
             res.status(200).json( tab );

@@ -73,10 +73,40 @@ module.exports = function (app: Express) {
   app.get("/api/articles", bodyParser.json(), async (req: any, res) => {
     try {
       const result = await pool.query("SELECT * FROM artykul");
-      res.status(200).json({ response: result.rows });
+      let tab = []
+      for (let n = 0; n < result.rows.length; n++) {
+        const user = await pool.query("SELECT imie from uzytkownik WHERE id_uzytkownika=$1", [result.rows[n].autor])
+        if (user.rowCount != 1){
+          res.status(401).json({ response: "Internal user name get error!" });
+          return;
+        }
+        tab.push({"id_artykulu" : result.rows[n].id_artykulu, "tytul" : result.rows[n].tytul, "opis" : result.rows[n].opis, "zdjecie" : result.rows[n].zdjecie, "autor" : user.rows[0].imie})
+      }
+      res.status(200).json({ response: tab });
     } catch (err) {
       console.error("Getting articles failed", err);
       res.status(500).json({ error: "Getting articles failed" });
+    }
+  });
+
+  app.post("/api/articleDetails", bodyParser.json(), async (req : any, res) => {
+    try {
+      const { articleID } = req.body;
+
+      const article = await pool.query(
+          "SELECT tytul, opis, zdjecie, autor FROM public.artykul WHERE id_artykulu = $1",
+          [articleID]);
+      if (article.rowCount != 1){
+        res.status(401).json({ response: "Article with that id does not exist!" });
+        return;
+      }
+      const user = await pool.query("SELECT imie from uzytkownik WHERE id_uzytkownika=$1", [article.rows[0].autor])
+
+      res.status(200).json( {"tytul" : article.rows[0].tytul, "opis" : article.rows[0].opis, "zdjecie" : article.rows[0].zdjecie, "autor" : user.rows[0].imie} );
+    }
+    catch (err) {
+      console.error("Error when getting article comments:", err);
+      res.status(500).json({ error: "Error when getting comments!" });
     }
   });
 };
