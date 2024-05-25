@@ -44,8 +44,6 @@ export default function Recipes() {
           ing: selectedIng[0].ingredient.id_skladnik,
           tag: selectedTag[0].id_tagu,
         });
-        console.log("oba na raz fn");
-        console.log(dataBy);
       }
     },
     [selectedIng, selectedTag, getByFn]
