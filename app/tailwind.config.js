@@ -22,6 +22,7 @@ export default {
         md600: "600px",
         md750: "750px",
         md800: "800px",
+        md900: "900px",
       },
       backgroundImage: {
         cockingBgDark: "url('/cockingbg-dark.png')",

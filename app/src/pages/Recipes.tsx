@@ -19,7 +19,6 @@ export default function Recipes() {
   const userAuth = queryClient.getQueryData(["user"]) !== undefined;
   const { data: recipesData, isLoading } = useGetRecipes();
   const { mutate: getByFn, data: dataBy, isSuccess } = useGetBy();
-  // const data = useRef(recipesData);
   const [data, setData] = useState(recipesData);
 
   const { isDarkMode } = useDarkMode();

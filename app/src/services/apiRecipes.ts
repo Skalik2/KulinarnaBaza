@@ -12,3 +12,14 @@ export function sendRecipe({ obj, userId }: { obj: any; userId: string }) {
       console.log(res.data.response);
     });
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function sendArticle({ obj, userId }: { obj: any; userId: string }) {
+  axios
+    .post(URL + "/api/articles/" + userId, obj, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      console.log(res.data.response);
+    });
+}
