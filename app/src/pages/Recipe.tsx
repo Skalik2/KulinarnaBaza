@@ -304,7 +304,7 @@ export default function Recipe() {
                     .slice()
                     .reverse()
                     .slice(0, 10)
-                    .map((item) => (
+                    .map((item: any) => (
                       <>
                         <div className="flex justify-center items-center gap-5 max-w-full">
                           <span className="self-start block text-2xl text-main rounded-full  p-2 border border-main">
