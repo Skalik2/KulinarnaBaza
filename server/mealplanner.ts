@@ -86,6 +86,7 @@ module.exports = function (app: Express) {
 
   app.delete("/api/mealplanner/:userId", bodyParser.json(), async (req: any, res) => {
     try {
+       console.log(req.body.id_przepisu, req.body.date, req.params.userId )
        const result = await pool.query(
         `DELETE FROM plan WHERE id_uzytkownika = ${req.params.userId} and id_przepisu = ${req.body.id_przepisu} and data = '${req.body.date}'`)
 

@@ -2,29 +2,31 @@ import { useEffect, useState } from "react";
 import Days from "../ui/mealPlanner/days";
 import axios from "axios";
 import MealPlannerCard from "../ui/mealPlanner/mealPlannerCard";
+import { useNavigate, useParams } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { useGetPlannerMeals } from "../hooks/useGetPlannerMeals";
+import { useGetRecipe } from "../hooks/useGetRecipe";
+import Spinner from "../ui/Spinner";
 
 export default function MealPlanner() {
-  const [planner, setPlanner] = useState([]);
-  const [recipes, setRecipes] = useState([]);
-  const userId = 34;
+  const params = useParams();
+  const queryClient = useQueryClient();
 
-  useEffect(function () {
-    axios.get(`http://localhost:5000/api/mealplanner/${userId}`).then((res) => {
-      setPlanner(res.data.response);
-    });
-  }, []);
+  const user = queryClient.getQueryData<{ id_uzytkownika: string }>(["user"]);
+  const userId = user?.id_uzytkownika || null;
+  const { data: recipeData, isLoading } = useGetPlannerMeals(userId);
+  
+  const [data, setData] = useState(null);
 
-  useEffect(function () {
-    planner.forEach(element => {
-      axios.get(`http://localhost:5000/api/recipes/${element.id_przepisu}`).then((res) => {
-        console.log(res.data)
-        // Dodawanie kart przepisów do listy [ moze react querry bedzie lepszy]
-      });
-    });  
-  }, [planner]);
-  
-  console.log("recipes",recipes);
-  
+  useEffect(() => {
+    if (!isLoading && recipeData) {
+      if (recipeData.response) {
+        setData(recipeData.response);
+      } else {
+        console.error('Response not found in recipeData');
+      }
+    }
+  }, [isLoading, recipeData]);
 
   return (
     <div className="bg-bgWhite text-bgDark dark:bg-bgDark dark:text-bgWhite min-h-screen">
@@ -32,25 +34,20 @@ export default function MealPlanner() {
         <Days />
       </div>
       <div className="flex flex-wrap justify-center gap-2 md:gap-4">
-        {/* Wypisywanie zmapowanych przepisów z bazy*/}
-        <MealPlannerCard
-              link="/recipes/kanapka"
-              imageSrc="../../images/hero.jpg"
-              title="Kurczak z ryżem"
-              data="25.05.2024"
-            />
-        <MealPlannerCard
-          link="/recipes/kanapka"
-          imageSrc="../../images/hero.jpg"
-          title="Pierogi z mięsem"
-          data="25.05.2024"
-        />
-        <MealPlannerCard
-          link="/recipes/kanapka"
-          imageSrc="../../images/hero.jpg"
-          title="Kanapka z serem"
-          data="25.05.2024"
-        />
+      {isLoading && !data && userId ? (
+        <div className="h-screen w-full flex justify-center items-center">
+          <Spinner />
+        </div>
+      ) : (
+        data?.map((item: any) => (
+          <MealPlannerCard
+            key={userId}
+            userId={userId}
+            meal={item}
+            data={item.data.substring(0, 10)}
+          />
+        ))
+      )}
       </div>
     </div>
   );
