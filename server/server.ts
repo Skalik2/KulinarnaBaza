@@ -19,6 +19,7 @@ require('./auth')(app);
 require('./comments')(app);
 require('./fridge')(app);
 require('./recipes')(app);
+require('./user')(app);
 require('./ingredients')(app);
 require('./tags')(app);
 require('./articles')(app);
