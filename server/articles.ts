@@ -159,4 +159,29 @@ module.exports = function (app: Express) {
       res.status(500).json({ error: "Getting articles failed" });
     }
   });
+
+  app.delete("/api/articles/:articleId", bodyParser.json(), async (req: any, res) => {
+    try {
+      await pool.query(
+        `DELETE FROM komentarz WHERE id_artykulu = ${req.params.articleId}`
+      );
+      await pool.query(
+        `DELETE FROM artykul WHERE id_artykulu = ${req.params.articleId}`
+      );
+      
+      const filename = `./images/recipeid_${req.params.articleId}_thumbnail.png`
+      fs.rmSync(filename, {
+        force: true,
+      });
+
+
+      res.status(200).json({ response: `Article ${req.params.articleId} removed successfully`});
+    } catch (err) {
+      console.error(`Article ${req.params.articleId} could not be deleted`, err);
+      res.status(500).json({
+        error: `Article ${req.params.articleId} could not be deleted`,
+      });
+    }
+  });
+
 };
