@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 
 const URL = "http://localhost:5000";
@@ -6,6 +7,23 @@ const URL = "http://localhost:5000";
 export function sendRecipe({ obj, userId }: { obj: any; userId: string }) {
   axios
     .post(URL + "/api/recipes/" + userId, obj, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      console.log(res.data.response);
+    });
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function modifyRecipe({
+  obj,
+  recipeId,
+}: {
+  obj: any;
+  recipeId: string;
+}) {
+  axios
+    .patch(URL + "/api/recipes/" + recipeId, obj, {
       withCredentials: true,
     })
     .then((res) => {

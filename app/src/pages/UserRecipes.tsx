@@ -14,7 +14,7 @@ export default function UserRecipes() {
   const [data, setData] = useState(userFav);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const ITEMS_ON_PAGE = 3;
+  const ITEMS_ON_PAGE = 6;
 
   const [label, setLabel] = useState("");
 
@@ -100,9 +100,11 @@ export default function UserRecipes() {
                   imageSrc={`http://localhost:5000/api/recipes/image/${item.id_przepisu}`}
                   title={item.tytul}
                   key={item.id_przepisu}
+                  id={item.id_przepisu}
                   price={item.cena}
                   time={item.czas_przygotowania}
                   views={item.wyswietlenia}
+                  toModify={true}
                 />
               ))}
           </div>
