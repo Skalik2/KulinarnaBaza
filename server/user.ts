@@ -1,5 +1,5 @@
 import {Express} from "express";
-import {hashPassword} from "./hashing";
+const {hashPassword} = require("./hashing");
 const bodyParser = require("body-parser");
 const pool = require("./db");
 
