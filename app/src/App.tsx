@@ -21,6 +21,7 @@ import AddNewRecipe from "./pages/AddNewRecipe";
 import Recipe from "./pages/Recipe";
 import AddNewArticle from "./pages/AddNewArticle";
 import Article from "./pages/Article";
+import UserArticles from "./pages/UserArticles";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -59,10 +60,12 @@ function App() {
                 <Route path="recipes/edit/:id" element={<AddNewRecipe />} />
                 <Route path="articles" element={<Articles />} />
                 <Route path="articles/add-new" element={<AddNewArticle />} />
+                <Route path="articles/edit/:id" element={<AddNewArticle />} />
                 <Route path="articles/:id/:title" element={<Article />} />
                 <Route path="planner" element={<MealPlanner />} />
                 <Route path="account" element={<Account />} />
                 <Route path="my-recipes" element={<UserRecipes />} />
+                <Route path="my-articles" element={<UserArticles />} />
                 <Route path="favorite" element={<Favorite />} />
                 <Route path="rank" element={<Rank />} />
                 <Route path="*" element={<PageNotFound />} />

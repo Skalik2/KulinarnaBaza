@@ -1,18 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-export function useGetArticle(id: string | undefined) {
+export function useGetUserArticles(userId?: string) {
   const { data, isLoading } = useQuery({
-    queryKey: [id],
+    queryKey: ["userArt"],
     queryFn: async () => {
-      const res = await axios.post(
-        `http://localhost:5000/api/articleDetails`,
-        { articleID: id },
+      const res = await axios.get(
+        `http://localhost:5000/api/articles/${userId}`,
         {
           withCredentials: true,
         }
       );
-      return res.data;
+      return res.data.response;
     },
   });
 

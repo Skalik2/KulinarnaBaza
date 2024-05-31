@@ -143,6 +143,7 @@ export default function Articles() {
                       /\s+/g,
                       "-"
                     )}`}
+                    key={item.id_artykulu}
                   />
                 ))}
             </>

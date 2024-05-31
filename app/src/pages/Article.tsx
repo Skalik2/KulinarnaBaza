@@ -157,9 +157,13 @@ export default function Article() {
               </div>
               <div className="flex flex-col justify-center items-center p-4 md400:px-16 sm:px-20 md:px-32 w-full">
                 {isLoadingComments ? (
-                  <p>Wczytywanie komentarzy</p>
+                  <p className="text-bgDark dark:text-bgWhite">
+                    Wczytywanie komentarzy
+                  </p>
                 ) : comments.length === 0 ? (
-                  <p>Ten artykuł nie ma jeszcze komentarzy</p>
+                  <p className="text-bgDark dark:text-bgWhite">
+                    Ten artykuł nie ma jeszcze komentarzy
+                  </p>
                 ) : (
                   <div className="flex flex-col justify-start items-start w-full gap-12">
                     {comments
