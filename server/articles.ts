@@ -196,7 +196,7 @@ module.exports = function (app: Express) {
           `UPDATE artykul SET tytul = '${req.body.tytul}', opis = '${req.body.opis}' WHERE id_artykulu = ${req.params.articleId}`
         );
         if (req.body.zdjecie) {
-          const filename = `./images/recipeid_${req.params.articleId}_thumbnail.png`;
+          const filename = `./images/article_${req.params.articleId}_thumbnail.png`;
 
           let base64Data = req.body.zdjecie.replace(
             /^data:image\/jpeg;base64,/,

@@ -172,7 +172,7 @@ export default function Recipe() {
                 <button
                   onClick={handleFav}
                   className="text-3xl text-red-500 p-3 hover:text-mainHover transition-colors duration-300"
-                  disabled={isLoadingFav}
+                  // disabled={}
                 >
                   {isFav ? <FaHeart /> : <FaRegHeart />}
                 </button>
@@ -249,27 +249,29 @@ export default function Recipe() {
                 {descriptionWithLineBreaks}
               </p>
             </div>
-            <div className="p-4 my-14 flex flex-col justify-center items-center gap-10">
-              <p className="text-lg md:text-2xl text-bgDark dark:text-bgWhite">
-                Polecane <span className="text-main">przepisy</span>
-              </p>
-              <div className=" flex flex-wrap justify-center gap-4 mx-auto max-w-7xl">
-                {sortedRecipes.map((item: any) => (
-                  <RecipeCard
-                    link={`/recipes/${item.id_przepisu}/${item.tytul.replace(
-                      /\s+/g,
-                      "-"
-                    )}`}
-                    imageSrc={`http://localhost:5000/api/recipes/image/${item.id_przepisu}`}
-                    title={item.tytul}
-                    key={item.id_przepisu}
-                    price={item.cena}
-                    time={item.czas_przygotowania}
-                    views={item.wyswietlenia}
-                  />
-                ))}
+            {sortedRecipes.length > 0 && (
+              <div className="p-4 my-14 flex flex-col justify-center items-center gap-10">
+                <p className="text-lg md:text-2xl text-bgDark dark:text-bgWhite">
+                  Polecane <span className="text-main">przepisy</span>
+                </p>
+                <div className=" flex flex-wrap justify-center gap-4 mx-auto max-w-7xl">
+                  {sortedRecipes.map((item: any) => (
+                    <RecipeCard
+                      link={`/recipes/${item.id_przepisu}/${item.tytul.replace(
+                        /\s+/g,
+                        "-"
+                      )}`}
+                      imageSrc={`http://localhost:5000/api/recipes/image/${item.id_przepisu}`}
+                      title={item.tytul}
+                      key={item.id_przepisu}
+                      price={item.cena}
+                      time={item.czas_przygotowania}
+                      views={item.wyswietlenia}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="p-4 my-14 flex flex-col justify-center items-center gap-10 w-full">
               <p className="text-lg md:text-2xl text-bgDark dark:text-bgWhite">
@@ -301,9 +303,13 @@ export default function Recipe() {
               </div>
               <div className="flex flex-col justify-center items-center p-4 md400:px-16 sm:px-20 md:px-32 w-full">
                 {isLoadingComments ? (
-                  <p>Wczytywanie komentarzy</p>
+                  <p className="text-bgDark dark:text-bgWhite">
+                    Wczytywanie komentarzy
+                  </p>
                 ) : comments.length === 0 ? (
-                  <p>Ten przepis nie ma jeszcze komentarzy</p>
+                  <p className="text-bgDark dark:text-bgWhite">
+                    Ten przepis nie ma jeszcze komentarzy
+                  </p>
                 ) : (
                   <div className="flex flex-col justify-start items-start w-full gap-12">
                     {comments

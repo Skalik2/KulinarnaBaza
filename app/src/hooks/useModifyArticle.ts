@@ -4,21 +4,21 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { modifyRecipe as modifyRecipeApi } from "../services/apiRecipes";
+import { modifyArticle as modifyArticleApi } from "../services/apiRecipes";
 
-export function useModifyRecipe() {
+export function useModifyArticle() {
   const queryClient = useQueryClient();
-  const { mutate: modifyRecipe, isSuccess } = useMutation({
+  const { mutate: modifyArticle, isSuccess } = useMutation({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mutationFn: modifyRecipeApi as MutationFunction<
+    mutationFn: modifyArticleApi as MutationFunction<
       unknown,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      { obj: any; recipeId: string }
+      { obj: any; articleId: string }
     >,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["recipes"] });
-      window.location.href = "/recipes";
-      toast.success("Przepis został zmodyfkowany");
+      queryClient.invalidateQueries({ queryKey: ["articles"] });
+      window.location.href = "/articles";
+      toast.success("Artykuł został zmodyfkowany");
     },
     onError: (err) => {
       console.log(err);
@@ -26,5 +26,5 @@ export function useModifyRecipe() {
     },
   });
 
-  return { modifyRecipe, isSuccess };
+  return { modifyArticle, isSuccess };
 }

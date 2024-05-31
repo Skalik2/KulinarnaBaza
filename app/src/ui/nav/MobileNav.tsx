@@ -10,6 +10,7 @@ import { CiLogin } from "react-icons/ci";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { CiCalendar } from "react-icons/ci";
+import { MdOutlineArticle } from "react-icons/md";
 
 type navOption = {
   title: string;
@@ -88,6 +89,12 @@ export default function MobileNav({
                     link="my-recipes"
                     onOpen={setOpen}
                     title="Moje Przepisy"
+                  />
+                  <MobileNavItem
+                    icon={<MdOutlineArticle />}
+                    link="my-articles"
+                    onOpen={setOpen}
+                    title="Moje Artykuły"
                   />
                   <MobileNavItem
                     icon={<CiCalendar />}

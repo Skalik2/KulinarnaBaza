@@ -21,6 +21,8 @@ import AddNewRecipe from "./pages/AddNewRecipe";
 import Recipe from "./pages/Recipe";
 import AddNewArticle from "./pages/AddNewArticle";
 import Article from "./pages/Article";
+import UserArticles from "./pages/UserArticles";
+import ProtectedRoute from "./ProtectedRoute";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,16 +57,20 @@ function App() {
                 <Route path="signup" element={<Register />} />
                 <Route path="recipes" element={<Recipes />} />
                 <Route path="recipes/:id/:title" element={<Recipe />} />
-                <Route path="recipes/add-new" element={<AddNewRecipe />} />
-                <Route path="recipes/edit/:id" element={<AddNewRecipe />} />
                 <Route path="articles" element={<Articles />} />
-                <Route path="articles/add-new" element={<AddNewArticle />} />
                 <Route path="articles/:id/:title" element={<Article />} />
-                <Route path="planner" element={<MealPlanner />} />
-                <Route path="account" element={<Account />} />
-                <Route path="my-recipes" element={<UserRecipes />} />
-                <Route path="favorite" element={<Favorite />} />
                 <Route path="rank" element={<Rank />} />
+                <Route element={<ProtectedRoute />}>
+                  <Route path="planner" element={<MealPlanner />} />
+                  <Route path="recipes/add-new" element={<AddNewRecipe />} />
+                  <Route path="recipes/edit/:id" element={<AddNewRecipe />} />
+                  <Route path="articles/add-new" element={<AddNewArticle />} />
+                  <Route path="articles/edit/:id" element={<AddNewArticle />} />
+                  <Route path="account" element={<Account />} />
+                  <Route path="my-recipes" element={<UserRecipes />} />
+                  <Route path="my-articles" element={<UserArticles />} />
+                  <Route path="favorite" element={<Favorite />} />
+                </Route>
                 <Route path="*" element={<PageNotFound />} />
               </Route>
             </Routes>

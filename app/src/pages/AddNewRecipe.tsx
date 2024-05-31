@@ -31,6 +31,7 @@ export default function AddNewRecipe() {
     register,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm<FieldValues>();
   const queryClient = useQueryClient();
@@ -85,16 +86,6 @@ export default function AddNewRecipe() {
           })
         );
         setRecipeTags(data.tagi);
-        // const zdjecie = `http://localhost:5000/api/recipes/image/${id}`;
-        // // const reader = new FileReader();
-        // // reader.onloadend = () => {
-        // //   const base64 = (reader.result as string)
-        // //     ?.replace("data:", "")
-        // //     .replace(/^.+,/, "");
-        // //   setBase64Image(base64);
-        // // };
-        // // reader.readAsDataURL(zdjecie);
-        // setSelectedImage(zdjecie);
       }
     },
     [
@@ -178,6 +169,13 @@ export default function AddNewRecipe() {
               label="Czas przygotowania (min)"
               error={errors?.time?.message}
               register={register}
+              validateFunction={() => {
+                if (getValues().time < 1) {
+                  return "Wartość nie może być mniejsza niż 1";
+                } else {
+                  return true;
+                }
+              }}
               initial={id ? true : false}
             />
             <FormInput
@@ -187,6 +185,13 @@ export default function AddNewRecipe() {
               error={errors?.price?.message}
               register={register}
               initial={id ? true : false}
+              validateFunction={() => {
+                if (getValues().price < 1) {
+                  return "Wartość nie może być mniejsza niż 1";
+                } else {
+                  return true;
+                }
+              }}
             />
           </div>
           <div className="relative w-full">

@@ -363,7 +363,12 @@ module.exports = function (app: Express) {
 
   app.delete("/api/recipes/:recipeId", bodyParser.json(), async (req: any, res) => {
     try {
-      
+      await pool.query(
+        `DELETE FROM ulubione WHERE id_przepisu = ${req.params.recipeId}`
+      );
+      await pool.query(
+        `DELETE FROM komentarz WHERE id_przepisu = ${req.params.recipeId}`
+      );
       await pool.query(
         `DELETE FROM tag_w_przepisie WHERE id_przepisu = ${req.params.recipeId}`
       );

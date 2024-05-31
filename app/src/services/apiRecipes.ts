@@ -41,3 +41,20 @@ export function sendArticle({ obj, userId }: { obj: any; userId: string }) {
       console.log(res.data.response);
     });
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function modifyArticle({
+  obj,
+  articleId,
+}: {
+  obj: any;
+  articleId: string;
+}) {
+  axios
+    .patch(URL + "/api/articles/" + articleId, obj, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      console.log(res.data.response);
+    });
+}

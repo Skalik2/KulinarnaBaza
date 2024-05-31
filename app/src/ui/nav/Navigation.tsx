@@ -82,6 +82,12 @@ export default function Navigation() {
                     Moje Przepisy
                   </Link>
                   <Link
+                    to="my-articles"
+                    className="text-[15px] text-bgDark dark:text-bgWhite hover:text-mainHover dark:hover:text-mainHover transition-colors duration-300 font-medium p-2"
+                  >
+                    Moje Artykuły
+                  </Link>
+                  <Link
                     to="planner"
                     className="text-[15px] text-bgDark dark:text-bgWhite hover:text-mainHover dark:hover:text-mainHover transition-colors duration-300 font-medium p-2"
                   >

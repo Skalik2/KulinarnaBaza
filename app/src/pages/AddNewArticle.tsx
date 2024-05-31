@@ -1,13 +1,17 @@
 import { useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import FormInput from "../ui/FormInput";
 import { useSendArticle } from "../hooks/useSendArticle";
+import { useParams } from "react-router-dom";
+import { useGetArticle } from "../hooks/useGetArticle";
+import { useModifyArticle } from "../hooks/useModifyArticle";
 
 export default function AddNewArticle() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FieldValues>();
   const queryClient = useQueryClient();
@@ -32,25 +36,48 @@ export default function AddNewArticle() {
     }
   };
 
+  const { id } = useParams();
+  const { data, isLoading } = useGetArticle(id);
+  const { modifyArticle } = useModifyArticle();
+  console.log(data);
+
+  useEffect(
+    function () {
+      if (id && !isLoading) {
+        setValue("title", data.tytul);
+        setValue("description", data.opis);
+      }
+      console.log("zdj");
+    },
+    [id, isLoading, setValue, data?.opis, data?.tytul, data?.zdjecie]
+  );
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
     const articleObj = {
       tytul: data.title,
       opis: data.description,
       zdjecie: base64Image,
     };
-    sendArticle({
-      obj: articleObj,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      userId: (user as any).id_uzytkownika,
-    });
+    if (id) {
+      modifyArticle({
+        obj: articleObj,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        articleId: id,
+      });
+    } else {
+      sendArticle({
+        obj: articleObj,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        userId: (user as any).id_uzytkownika,
+      });
+    }
   };
 
   return (
     <div>
       <div className="py-16 md:pt-[72px] flex justify-center items-center flex-col gap-4 dark:bg-bgDark mt-10">
         <p className="text-center text-lg dark:text-bgWhite">
-          Dodaj nowy artykuł
+          {id ? "Zmodyfikuj artykuł" : "Dodaj nowy artykuł"}
         </p>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -64,6 +91,7 @@ export default function AddNewArticle() {
                 label="Tytuł artykułu"
                 error={errors?.title?.message}
                 register={register}
+                initial={id ? true : false}
               />
             </div>
             <div className="relative w-full">
@@ -90,7 +118,7 @@ export default function AddNewArticle() {
               </p>
               <label className="block text-center w-[250px] border-main border-solid border-2 py-2 text-main uppercase tracking-wide  rounded-full transition-all duration-300 hover:bg-main hover:text-bgWhite cursor-pointer my-10">
                 <span className="">
-                  {selectedImage ? "Zmień zdjęcie" : "Dodaj zdjęcie"}
+                  {id || selectedImage ? "Zmień zdjęcie" : "Dodaj zdjęcie"}
                 </span>
                 <input
                   type="file"
@@ -101,9 +129,13 @@ export default function AddNewArticle() {
                 />
               </label>
               <div className="w-full">
-                {selectedImage ? (
+                {id || selectedImage ? (
                   <img
-                    src={selectedImage}
+                    src={
+                      !selectedImage
+                        ? `http://localhost:5000/api/articles/image/${id}`
+                        : selectedImage
+                    }
                     alt="Twoje wybrane zdjęcie, jeśli nie działa to zepsułem coś :("
                   />
                 ) : (
@@ -116,7 +148,7 @@ export default function AddNewArticle() {
               className="w-[300px] bg-main hover:bg-mainHover py-2 text-white uppercase tracking-wide  rounded-full transition-all duration-300"
               disabled={!base64Image}
             >
-              Opublikuj artykuł
+              {id ? "Zmodyfikuj artykuł" : "Opublikuj artykuł"}
             </button>
           </div>
         </form>
