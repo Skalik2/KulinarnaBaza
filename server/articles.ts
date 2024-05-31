@@ -130,4 +130,35 @@ module.exports = function (app: Express) {
       res.status(500).json({ error: "Error when getting comments!" });
     }
   });
+
+  app.get("/api/articles/:userId", bodyParser.json(), async (req: any, res) => {
+    try {
+      const result = await pool.query(
+        `SELECT * FROM artykul WHERE autor= ${req.params.userId}`
+      );
+      let tab = [];
+      for (let n = 0; n < result.rows.length; n++) {
+        const user = await pool.query(
+          "SELECT imie from uzytkownik WHERE id_uzytkownika=$1",
+          [result.rows[n].autor]
+        );
+        if (user.rowCount != 1) {
+          res.status(401).json({ response: "Internal user name get error!" });
+          return;
+        }
+        tab.push({
+          id_artykulu: result.rows[n].id_artykulu,
+          tytul: result.rows[n].tytul,
+          opis: result.rows[n].opis,
+          zdjecie: result.rows[n].zdjecie,
+          autor: user.rows[0].imie,
+          data_publikacji: result.rows[0].data_publikacji,
+        });
+      }
+      res.status(200).json({ response: tab });
+    } catch (err) {
+      console.error("Getting articles failed", err);
+      res.status(500).json({ error: "Getting articles failed" });
+    }
+  });
 };
