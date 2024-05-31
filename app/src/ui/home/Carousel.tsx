@@ -34,8 +34,8 @@ const Carousel: React.FC = () => {
 
   const goToNext = () => {
     sliderRef.current?.slickNext();
-  };
-  console.log(data);
+  }; 
+  
   return (
     <div className=" pt-16 pb-10 bg-bgWhite dark:bg-bgDark dark:text-bgWhite text-center">
       <h1 className=" text-5xl py-2">Nasze najlepsze dania</h1>
