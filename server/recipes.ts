@@ -117,9 +117,11 @@ module.exports = function (app: Express) {
         const tags = await pool.query(
           `SELECT tag.id_tagu, tag.nazwa FROM tag_w_przepisie JOIN tag ON tag_w_przepisie.id_tagu = tag.id_tagu WHERE tag_w_przepisie.id_przepisu = ${req.params.recipeId}`
         );
-        res
-          .status(200)
-          .json({ przepis: result.rows, skladniki: ingredients.rows, tagi: tags.rows });
+        res.status(200).json({
+          przepis: result.rows,
+          skladniki: ingredients.rows,
+          tagi: tags.rows,
+        });
       } catch (err) {
         console.error(`Getting recipe ${req.params.recipeId} failed`, err);
         res.status(500).json({ error: "Getting recipe failed" });
@@ -161,21 +163,17 @@ module.exports = function (app: Express) {
         } else {
           throw new Error(`No recipe with given id: ${req.params.recipeId}`);
         }
-        res
-          .status(200)
-          .json({
-            response: `Recipe ${req.params.recipeId} added to user ${req.params.userId}'s favourites`,
-          });
+        res.status(200).json({
+          response: `Recipe ${req.params.recipeId} added to user ${req.params.userId}'s favourites`,
+        });
       } catch (err) {
         console.error(
           `Adding recipe to user ${req.params.userId}'s favourite failed`,
           err
         );
-        res
-          .status(500)
-          .json({
-            error: `Adding recipe to user ${req.params.userId}'s favourite failed`,
-          });
+        res.status(500).json({
+          error: `Adding recipe to user ${req.params.userId}'s favourite failed`,
+        });
       }
     }
   );
@@ -185,22 +183,20 @@ module.exports = function (app: Express) {
     bodyParser.json(),
     async (req: any, res) => {
       try {
-          await pool.query(`DELETE FROM ulubione WHERE id_uzytkownika = ${req.params.userId} and id_przepisu = ${req.params.recipeId}`)
-        res
-          .status(200)
-          .json({
-            response: `Recipe ${req.params.recipeId} deleted from user ${req.params.userId}'s favourites`,
-          });
+        await pool.query(
+          `DELETE FROM ulubione WHERE id_uzytkownika = ${req.params.userId} and id_przepisu = ${req.params.recipeId}`
+        );
+        res.status(200).json({
+          response: `Recipe ${req.params.recipeId} deleted from user ${req.params.userId}'s favourites`,
+        });
       } catch (err) {
         console.error(
           `Removing recipe from user ${req.params.userId}'s favourite failed`,
           err
         );
-        res
-          .status(500)
-          .json({
-            error: `Removing recipe from user ${req.params.userId}'s favourite failed`,
-          });
+        res.status(500).json({
+          error: `Removing recipe from user ${req.params.userId}'s favourite failed`,
+        });
       }
     }
   );
@@ -220,11 +216,9 @@ module.exports = function (app: Express) {
           `Getting user ${req.params.userId}'s favourite failed`,
           err
         );
-        res
-          .status(500)
-          .json({
-            error: `Getting user ${req.params.userId}'s favourite failed`,
-          });
+        res.status(500).json({
+          error: `Getting user ${req.params.userId}'s favourite failed`,
+        });
       }
     }
   );
@@ -244,11 +238,9 @@ module.exports = function (app: Express) {
           `Getting recipes by tag id: ${req.params.tagId} failed`,
           err
         );
-        res
-          .status(500)
-          .json({
-            error: `Getting recipes by tag id: ${req.params.tagId} failed`,
-          });
+        res.status(500).json({
+          error: `Getting recipes by tag id: ${req.params.tagId} failed`,
+        });
       }
     }
   );
@@ -268,24 +260,22 @@ module.exports = function (app: Express) {
           `Getting recipes by ingredient id: ${req.params.ingredientId} failed`,
           err
         );
-        res
-          .status(500)
-          .json({
-            error: `Getting recipes by tag id: ${req.params.ingredientId} failed`,
-          });
+        res.status(500).json({
+          error: `Getting recipes by tag id: ${req.params.ingredientId} failed`,
+        });
       }
     }
   );
 
- 
   app.get(
     "/api/recipesByIngredientAndTag/",
     bodyParser.json(),
     async (req: any, res) => {
       try {
-        const result =
-          await pool.query(await pool.query(`SELECT * FROM public.przepis join skladnik_w_przepisie on przepis.id_przepisu = skladnik_w_przepisie.id_przepisu join tag_w_przepisie on tag_w_przepisie.id_przepisu = przepis.id_przepisu
-          where skladnik_w_przepisie.id_skladnika = ${req.body.id_skladnika} and tag_w_przepisie.id_tagu = ${req.body.id_tagu}`));
+        const result = await pool.query(
+          await pool.query(`SELECT * FROM public.przepis join skladnik_w_przepisie on przepis.id_przepisu = skladnik_w_przepisie.id_przepisu join tag_w_przepisie on tag_w_przepisie.id_przepisu = przepis.id_przepisu
+          where skladnik_w_przepisie.id_skladnika = ${req.body.id_skladnika} and tag_w_przepisie.id_tagu = ${req.body.id_tagu}`)
+        );
 
         res.status(200).json({ response: result.rows });
       } catch (err) {
@@ -293,35 +283,110 @@ module.exports = function (app: Express) {
           `Getting recipes by ingredient id: ${req.body.ingredientId} and tag id: ${req.body.tagId} failed`,
           err
         );
-        res
-          .status(500)
-          .json({
-            error: `Getting recipes by ingredient id: ${req.body.ingredientId} and tag id: ${req.body.tagId} failed`,
-          });
+        res.status(500).json({
+          error: `Getting recipes by ingredient id: ${req.body.ingredientId} and tag id: ${req.body.tagId} failed`,
+        });
       }
     }
   );
 
-  app.get(
-    "/api/topRecipes",
+  app.get("/api/topRecipes", bodyParser.json(), async (req: any, res) => {
+    try {
+      const result = await pool.query(
+        `SELECT * FROM przepis ORDER BY wyswietlenia DESC LIMIT 10`
+      );
+
+      res.status(200).json({ response: result.rows });
+    } catch (err) {
+      console.error(`Getting top 10 recipes failed`, err);
+      res.status(500).json({
+        error: `Getting top 10 recipes failed`,
+      });
+    }
+  });
+
+  app.patch(
+    "/api/recipes/:recipeId",
     bodyParser.json(),
     async (req: any, res) => {
       try {
-        const result =
-          await pool.query(`SELECT * FROM przepis ORDER BY wyswietlenia DESC LIMIT 10`);
+        await pool.query(
+          `UPDATE przepis SET tytul = '${req.body.tytul}', opis = '${req.body.opis}', czas_przygotowania = ${req.body.czas_przygotowania}, cena = ${req.body.cena} WHERE id_przepisu = ${req.params.recipeId}`
+        );
+        await pool.query(
+          `DELETE FROM tag_w_przepisie WHERE id_przepisu = ${req.params.recipeId}`
+        );
+        await pool.query(
+          `DELETE FROM skladnik_w_przepisie WHERE id_przepisu = ${req.params.recipeId}`
+        );
+        for (let i = 0; i < req.body.skladniki.length; i++) {
+          await pool.query(
+            `INSERT INTO skladnik_w_przepisie VALUES (${req.params.recipeId}, ${req.body.skladniki[i].id_skladnika}, '${req.body.skladniki[i].ilosc}')`
+          );
+        }
+        for (let j = 0; j < req.body.tagi.length; j++) {
+          await pool.query(
+            `INSERT INTO tag_w_przepisie VALUES (${req.body.tagi[j].id_tagu}, ${req.params.recipeId})`
+          );
+        }
+        if (req.body.zdjecie) {
+          const filename = `./images/recipeid_${req.params.recipeId}_thumbnail.png`;
 
-        res.status(200).json({ response: result.rows });
+          let base64Data = req.body.zdjecie.replace(
+            /^data:image\/jpeg;base64,/,
+            ""
+          );
+          base64Data = base64Data.replace(/^data:image\/png;base64,/, "");
+          fs.writeFile(filename, base64Data, "base64", function (err: any) {
+            if (err) {
+              console.log(err);
+              throw new Error("Image could not be saved");
+            } else {
+              console.log(`Image ${filename} saved successfully`);
+            }
+          });
+        }
+        res
+          .status(200)
+          .json({ response: `Recipe ${req.params.recipeId} updated` });
       } catch (err) {
         console.error(
-          `Getting top 10 recipes failed`,
+          `Recipe ${req.params.recipeId} could not be edited!`,
           err
         );
-        res
-          .status(500)
-          .json({
-            error: `Getting top 10 recipes failed`,
-          });
+        res.status(500).json({
+          error: `Recipe ${req.params.recipeId} could not be edited! ${err}`,
+        });
       }
     }
-  )
+  );
+
+  app.delete("/api/recipes/:recipeId", bodyParser.json(), async (req: any, res) => {
+    try {
+      
+      await pool.query(
+        `DELETE FROM tag_w_przepisie WHERE id_przepisu = ${req.params.recipeId}`
+      );
+      await pool.query(
+        `DELETE FROM skladnik_w_przepisie WHERE id_przepisu = ${req.params.recipeId}`
+      );
+      await pool.query(
+        `DELETE FROM przepis WHERE id_przepisu = ${req.params.recipeId}`
+      );
+      const filename = `./images/recipeid_${req.params.recipeId}_thumbnail.png`
+      fs.rmSync(filename, {
+        force: true,
+      });
+
+
+      res.status(200).json({ response: `Recipe ${req.params.recipeId} removed successfully`});
+    } catch (err) {
+      console.error(`Recipe ${req.params.recipeId} could not be deleted`, err);
+      res.status(500).json({
+        error: `Recipe ${req.params.recipeId} could not be deleted`,
+      });
+    }
+  });
+
+
 };
