@@ -162,6 +162,7 @@ module.exports = function (app: Express) {
     }
   });
 
+
   app.delete("/api/articles/:articleId", bodyParser.json(), async (req: any, res) => {
     try {
       await pool.query(
@@ -185,5 +186,45 @@ module.exports = function (app: Express) {
       });
     }
   });
+
+  app.patch(
+    "/api/articles/:articleId",
+    bodyParser.json(),
+    async (req: any, res) => {
+      try {
+        await pool.query(
+          `UPDATE artykul SET tytul = '${req.body.tytul}', opis = '${req.body.opis}' WHERE id_artykulu = ${req.params.articleId}`
+        );
+        if (req.body.zdjecie) {
+          const filename = `./images/recipeid_${req.params.articleId}_thumbnail.png`;
+
+          let base64Data = req.body.zdjecie.replace(
+            /^data:image\/jpeg;base64,/,
+            ""
+          );
+          base64Data = base64Data.replace(/^data:image\/png;base64,/, "");
+          fs.writeFile(filename, base64Data, "base64", function (err: any) {
+            if (err) {
+              console.log(err);
+              throw new Error("Image could not be saved");
+            } else {
+              console.log(`Image ${filename} saved successfully`);
+            }
+          });
+        }
+        res
+          .status(200)
+          .json({ response: `Article ${req.params.articleId} updated` });
+      } catch (err) {
+        console.error(
+          `Article ${req.params.articleId} could not be edited!`,
+          err
+        );
+        res.status(500).json({
+          error: `Article ${req.params.articleId} could not be edited! ${err}`,
+        });
+      }
+    }
+  );
 
 };
