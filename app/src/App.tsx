@@ -56,6 +56,7 @@ function App() {
                 <Route path="recipes" element={<Recipes />} />
                 <Route path="recipes/:id/:title" element={<Recipe />} />
                 <Route path="recipes/add-new" element={<AddNewRecipe />} />
+                <Route path="recipes/edit/:id" element={<AddNewRecipe />} />
                 <Route path="articles" element={<Articles />} />
                 <Route path="articles/add-new" element={<AddNewArticle />} />
                 <Route path="articles/:id/:title" element={<Article />} />

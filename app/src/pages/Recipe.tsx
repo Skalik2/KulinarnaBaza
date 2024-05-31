@@ -18,6 +18,7 @@ import { useRemoveFav } from "../hooks/useRemoveFav";
 import { GiCook } from "react-icons/gi";
 import { useGetRecipeComments } from "../hooks/useGetRecipeComments";
 import { useAddRecipeComment } from "../hooks/useAddRecipeComment";
+import Footer from "../ui/footer/Footer";
 
 interface recipeInterface {
   autor: number;
@@ -148,186 +149,191 @@ export default function Recipe() {
     ));
 
   return (
-    <div className=" py-16 md:pt-[72px] bg-bgWhite dark:bg-bgDark">
-      {isLoading ? (
-        <div className="h-screen w-full flex justify-center items-center">
-          <Spinner />
-        </div>
-      ) : (
-        <div className="flex flex-col max-w-6xl w-full mx-auto justify-center items-center">
-          <div className="rounded-lg overflow-hidden mt-7 w-full">
-            <img
-              className="w-full"
-              src={`http://localhost:5000/api/recipes/image/${recipeData.przepis[0].id_przepisu}`}
-              alt={`${recipeData.przepis[0].id_przepisu}`}
-            />
+    <>
+      <div className=" py-16 md:pt-[72px] bg-bgWhite dark:bg-bgDark">
+        {isLoading ? (
+          <div className="h-screen w-full flex justify-center items-center">
+            <Spinner />
           </div>
-          <div className="flex justify-between w-full items-center p-4 sm:px-10 mt-5">
-            <div className="w-full flex justify-between items-center">
-              <h3 className="font-semibold text-3xl md:text-4xl text-bgDark dark:text-bgWhite">
-                {recipeData.przepis[0].tytul}
-              </h3>
-              <button
-                onClick={handleFav}
-                className="text-3xl text-red-500 p-3 hover:text-mainHover transition-colors duration-300"
-                disabled={isLoadingFav}
-              >
-                {isFav ? <FaHeart /> : <FaRegHeart />}
-              </button>
+        ) : (
+          <div className="flex flex-col max-w-6xl w-full mx-auto justify-center items-center">
+            <div className="rounded-lg overflow-hidden mt-7 w-full">
+              <img
+                className="w-full"
+                src={`http://localhost:5000/api/recipes/image/${recipeData.przepis[0].id_przepisu}`}
+                alt={`${recipeData.przepis[0].id_przepisu}`}
+              />
             </div>
-          </div>
-          <div className="p-4 sm:px-10 w-full flex justify-start items-center flex-wrap gap-6 text-slate-400 dark:text-zinc-500">
-            <div>
-              <p className="flex justify-center items-center gap-2 mr-5">
-                <span className="text-3xl">
-                  <CiStopwatch />
-                </span>
-                {recipeData.przepis[0].czas_przygotowania} min.
-              </p>
-            </div>
-            <div>
-              <p className="flex justify-center items-center gap-3 mr-5">
-                <span className="text-2xl">
-                  <SlEye />
-                </span>
-                {recipeData.przepis[0].wyswietlenia}
-              </p>
-            </div>
-
-            <div>
-              <p className="flex justify-center items-center gap-3 mr-5">
-                <span className="text-2xl">
-                  <IoPricetagOutline />
-                </span>
-                {recipeData.przepis[0].cena} zł
-              </p>
-            </div>
-            <div>
-              <p className="flex justify-center items-center gap-3">
-                <span className="text-2xl">
-                  <CiCalendar />
-                </span>
-                {new Date(
-                  recipeData.przepis[0].data_publikacji
-                ).toLocaleDateString()}
-              </p>
-            </div>
-          </div>
-          <div className="flex justify-start w-full items-center gap-5 flex-wrap p-4 sm:px-10 my-10">
-            {recipeData.tagi.map((item, i) => (
-              <div
-                key={i}
-                className="px-3 py-2 rounded-lg bg-bgWhiteHover dark:bg-bgDarkHover text-bgDark dark:text-bgWhite "
-              >
-                <p>{item.nazwa}</p>
+            <div className="flex justify-between w-full items-center p-4 sm:px-10 mt-5">
+              <div className="w-full flex justify-between items-center">
+                <h3 className="font-semibold text-3xl md:text-4xl text-bgDark dark:text-bgWhite">
+                  {recipeData.przepis[0].tytul}
+                </h3>
+                <button
+                  onClick={handleFav}
+                  className="text-3xl text-red-500 p-3 hover:text-mainHover transition-colors duration-300"
+                  disabled={isLoadingFav}
+                >
+                  {isFav ? <FaHeart /> : <FaRegHeart />}
+                </button>
               </div>
-            ))}
-          </div>
-          <div className=" w-full p-4 sm:px-10 bg-bgWhiteHover dark:bg-bgDarkHover rounded-lg py-14">
-            <p className="text-lg md:text-2xl text-bgDark dark:text-bgWhite font-semibold">
-              Składniki:
-            </p>
-            {recipeData.skladniki.map((item, i) => (
-              <div
-                className="flex gap-5 justify-start items-center my-2 py-2 ml-5"
-                key={i}
-              >
-                <div className="w-2 h-2 rounded-full bg-main"></div>
-                <p className="text-bgDark dark:text-bgWhite">
-                  {item.nazwa} - {item.ilosc}
+            </div>
+            <div className="p-4 sm:px-10 w-full flex justify-start items-center flex-wrap gap-6 text-slate-400 dark:text-zinc-500">
+              <div>
+                <p className="flex justify-center items-center gap-2 mr-5">
+                  <span className="text-3xl">
+                    <CiStopwatch />
+                  </span>
+                  {recipeData.przepis[0].czas_przygotowania} min.
                 </p>
               </div>
-            ))}
-          </div>
-          <div className="flex flex-col justify-center w-full items-start p-4 sm:px-10">
-            <h3 className="text-lg md:text-2xl text-bgDark dark:text-bgWhite font-semibold my-6">
-              Opis przepisu
-            </h3>
-            <p className="text-bgDark dark:text-bgWhite text-[15px] ">
-              {descriptionWithLineBreaks}
-            </p>
-          </div>
-          <div className="p-4 my-14 flex flex-col justify-center items-center gap-10">
-            <p className="text-lg md:text-2xl text-bgDark dark:text-bgWhite">
-              Polecane <span className="text-main">przepisy</span>
-            </p>
-            <div className=" flex flex-wrap justify-center gap-4 mx-auto max-w-7xl">
-              {sortedRecipes.map((item: any) => (
-                <RecipeCard
-                  link={`/recipes/${item.id_przepisu}/${item.tytul.replace(
-                    /\s+/g,
-                    "-"
-                  )}`}
-                  imageSrc={`http://localhost:5000/api/recipes/image/${item.id_przepisu}`}
-                  title={item.tytul}
-                  key={item.id_przepisu}
-                  price={item.cena}
-                  time={item.czas_przygotowania}
-                  views={item.wyswietlenia}
-                />
+              <div>
+                <p className="flex justify-center items-center gap-3 mr-5">
+                  <span className="text-2xl">
+                    <SlEye />
+                  </span>
+                  {recipeData.przepis[0].wyswietlenia}
+                </p>
+              </div>
+
+              <div>
+                <p className="flex justify-center items-center gap-3 mr-5">
+                  <span className="text-2xl">
+                    <IoPricetagOutline />
+                  </span>
+                  {recipeData.przepis[0].cena} zł
+                </p>
+              </div>
+              <div>
+                <p className="flex justify-center items-center gap-3">
+                  <span className="text-2xl">
+                    <CiCalendar />
+                  </span>
+                  {new Date(
+                    recipeData.przepis[0].data_publikacji
+                  ).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-start w-full items-center gap-5 flex-wrap p-4 sm:px-10 my-10">
+              {recipeData.tagi.map((item, i) => (
+                <div
+                  key={i}
+                  className="px-3 py-2 rounded-lg bg-bgWhiteHover dark:bg-bgDarkHover text-bgDark dark:text-bgWhite "
+                >
+                  <p>{item.nazwa}</p>
+                </div>
               ))}
             </div>
-          </div>
-
-          <div className="p-4 my-14 flex flex-col justify-center items-center gap-10 w-full">
-            <p className="text-lg md:text-2xl text-bgDark dark:text-bgWhite">
-              Komentarze <span className="text-main">do przepisu</span>
-            </p>
-            <div className="flex p-4 md400:px-16 sm:px-20 md:px-32 flex-col justify-end items-end w-full gap-5">
-              <div className="w-full  flex justify-center items-center gap-10">
-                <span className="hidden sm:block text-2xl text-main rounded-full p-2 border border-main">
-                  <GiCook />
-                </span>
-                <div className="relative h-[50px] w-full">
-                  <input
-                    id="label"
-                    placeholder="Treść komentarza"
-                    className="border-none focus:outline-none  px-3 py-2 w-full bg-transparent  dark:text-bgWhite text-bgDark"
-                    type="text"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
+            <div className=" w-full p-4 sm:px-10 bg-bgWhiteHover dark:bg-bgDarkHover rounded-lg py-14">
+              <p className="text-lg md:text-2xl text-bgDark dark:text-bgWhite font-semibold">
+                Składniki:
+              </p>
+              {recipeData.skladniki.map((item, i) => (
+                <div
+                  className="flex gap-5 justify-start items-center my-2 py-2 ml-5"
+                  key={i}
+                >
+                  <div className="w-2 h-2 rounded-full bg-main"></div>
+                  <p className="text-bgDark dark:text-bgWhite">
+                    {item.nazwa} - {item.ilosc}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-col justify-center w-full items-start p-4 sm:px-10">
+              <h3 className="text-lg md:text-2xl text-bgDark dark:text-bgWhite font-semibold my-6">
+                Opis przepisu
+              </h3>
+              <p className="text-bgDark dark:text-bgWhite text-[15px] ">
+                {descriptionWithLineBreaks}
+              </p>
+            </div>
+            <div className="p-4 my-14 flex flex-col justify-center items-center gap-10">
+              <p className="text-lg md:text-2xl text-bgDark dark:text-bgWhite">
+                Polecane <span className="text-main">przepisy</span>
+              </p>
+              <div className=" flex flex-wrap justify-center gap-4 mx-auto max-w-7xl">
+                {sortedRecipes.map((item: any) => (
+                  <RecipeCard
+                    link={`/recipes/${item.id_przepisu}/${item.tytul.replace(
+                      /\s+/g,
+                      "-"
+                    )}`}
+                    imageSrc={`http://localhost:5000/api/recipes/image/${item.id_przepisu}`}
+                    title={item.tytul}
+                    key={item.id_przepisu}
+                    price={item.cena}
+                    time={item.czas_przygotowania}
+                    views={item.wyswietlenia}
                   />
-                  <div className="absolute h-[1px] w-full bg-main"></div>
-                </div>
+                ))}
               </div>
-              <button
-                onClick={handleAddComment}
-                className="w-[300px] bg-main hover:bg-mainHover py-2 text-white uppercase tracking-wide  rounded-full transition-all duration-300 mt-3"
-              >
-                Dodaj komentarz
-              </button>
             </div>
-            <div className="flex flex-col justify-center items-center p-4 md400:px-16 sm:px-20 md:px-32 w-full">
-              {isLoadingComments ? (
-                <p>Wczytywanie komentarzy</p>
-              ) : comments.length === 0 ? (
-                <p>Ten przepis nie ma jeszcze komentarzy</p>
-              ) : (
-                <div className="flex flex-col justify-start items-start w-full gap-12">
-                  {comments
-                    .slice()
-                    .reverse()
-                    .slice(0, 10)
-                    .map((item: any) => (
-                      <>
-                        <div className="flex justify-center items-center gap-5 max-w-full">
-                          <span className="self-start block text-2xl text-main rounded-full  p-2 border border-main">
-                            <GiCook />
-                          </span>
-                          <div className="flex flex-col justify-center items-start gap-5 text-bgDark dark:text-bgWhite">
-                            <p className="text-sm font-medium">{item.imie}</p>
-                            <p className="text-wrap break-words">{item.opis}</p>
-                          </div>
-                        </div>
-                        <div className="h-[1px] w-full bg-slate-200 dark:bg-stone-800"></div>
-                      </>
-                    ))}{" "}
+
+            <div className="p-4 my-14 flex flex-col justify-center items-center gap-10 w-full">
+              <p className="text-lg md:text-2xl text-bgDark dark:text-bgWhite">
+                Komentarze <span className="text-main">do przepisu</span>
+              </p>
+              <div className="flex p-4 md400:px-16 sm:px-20 md:px-32 flex-col justify-end items-end w-full gap-5">
+                <div className="w-full  flex justify-center items-center gap-10">
+                  <span className="hidden sm:block text-2xl text-main rounded-full p-2 border border-main">
+                    <GiCook />
+                  </span>
+                  <div className="relative h-[50px] w-full">
+                    <input
+                      id="label"
+                      placeholder="Treść komentarza"
+                      className="border-none focus:outline-none  px-3 py-2 w-full bg-transparent  dark:text-bgWhite text-bgDark"
+                      type="text"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    />
+                    <div className="absolute h-[1px] w-full bg-main"></div>
+                  </div>
                 </div>
-              )}
+                <button
+                  onClick={handleAddComment}
+                  className="w-[300px] bg-main hover:bg-mainHover py-2 text-white uppercase tracking-wide  rounded-full transition-all duration-300 mt-3"
+                >
+                  Dodaj komentarz
+                </button>
+              </div>
+              <div className="flex flex-col justify-center items-center p-4 md400:px-16 sm:px-20 md:px-32 w-full">
+                {isLoadingComments ? (
+                  <p>Wczytywanie komentarzy</p>
+                ) : comments.length === 0 ? (
+                  <p>Ten przepis nie ma jeszcze komentarzy</p>
+                ) : (
+                  <div className="flex flex-col justify-start items-start w-full gap-12">
+                    {comments
+                      .slice()
+                      .reverse()
+                      .slice(0, 10)
+                      .map((item: any) => (
+                        <>
+                          <div className="flex justify-center items-center gap-5 max-w-full">
+                            <span className="self-start block text-2xl text-main rounded-full  p-2 border border-main">
+                              <GiCook />
+                            </span>
+                            <div className="flex flex-col justify-center items-start gap-5 text-bgDark dark:text-bgWhite">
+                              <p className="text-sm font-medium">{item.imie}</p>
+                              <p className="text-wrap break-words">
+                                {item.opis}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="h-[1px] w-full bg-slate-200 dark:bg-stone-800"></div>
+                        </>
+                      ))}{" "}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+      <Footer />
+    </>
   );
 }

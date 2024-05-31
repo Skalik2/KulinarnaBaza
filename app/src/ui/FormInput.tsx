@@ -20,6 +20,7 @@ interface InputBoxProps {
     | Merge<FieldError, FieldErrorsImpl<FieldValues>>
     | undefined;
   isTextArea?: boolean;
+  initial?: boolean;
 }
 
 export default function FormInput({
@@ -30,9 +31,10 @@ export default function FormInput({
   validateFunction,
   register,
   isTextArea = false,
+  initial,
 }: InputBoxProps) {
   const [inputValue, setInputValue] = useState<string | number>("");
-  const [focus, setFocus] = useState(false);
+  const [focus, setFocus] = useState(initial ? initial : false);
 
   function changeValue(val: string | number) {
     setInputValue(val);

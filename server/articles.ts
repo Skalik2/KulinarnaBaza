@@ -133,7 +133,9 @@ module.exports = function (app: Express) {
 
   app.get("/api/articles/:userId", bodyParser.json(), async (req: any, res) => {
     try {
-      const result = await pool.query(`SELECT * FROM artykul WHERE autor= ${req.params.userId}`);
+      const result = await pool.query(
+        `SELECT * FROM artykul WHERE autor= ${req.params.userId}`
+      );
       let tab = [];
       for (let n = 0; n < result.rows.length; n++) {
         const user = await pool.query(

@@ -7,6 +7,9 @@ import AddNewIngModal from "../ui/recipes/AddNewIngModal";
 import AddNewTagModal from "../ui/recipes/AddNewTagModal";
 import { useSendRecipe } from "../hooks/useSendRecipe";
 import { useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { useGetRecipe } from "../hooks/useGetRecipe";
+import { useModifyRecipe } from "../hooks/useModifyRecipe";
 
 export interface ingredientInterface {
   id_skladnik: number;
@@ -27,6 +30,7 @@ export default function AddNewRecipe() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FieldValues>();
   const queryClient = useQueryClient();
@@ -42,6 +46,8 @@ export default function AddNewRecipe() {
   const [selectedImage, setSelectedImage] = useState("");
   const [base64Image, setBase64Image] = useState("");
 
+  const { modifyRecipe } = useModifyRecipe();
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -56,6 +62,52 @@ export default function AddNewRecipe() {
       reader.readAsDataURL(file);
     }
   };
+
+  const { id } = useParams();
+  const { data, isLoading } = useGetRecipe(id);
+  console.log(data);
+
+  useEffect(
+    function () {
+      if (id && !isLoading) {
+        setValue("title", data.przepis[0].tytul);
+        setValue("time", data.przepis[0].czas_przygotowania);
+        setValue("price", data.przepis[0].cena);
+        setValue("description", data.przepis[0].opis);
+
+        setRecipeIngredients(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          data.skladniki.map((item: any) => {
+            return {
+              ingredient: { id_skladnik: item.id_skladnik, nazwa: item.nazwa },
+              amount: item.ilosc,
+            };
+          })
+        );
+        setRecipeTags(data.tagi);
+        // const zdjecie = `http://localhost:5000/api/recipes/image/${id}`;
+        // // const reader = new FileReader();
+        // // reader.onloadend = () => {
+        // //   const base64 = (reader.result as string)
+        // //     ?.replace("data:", "")
+        // //     .replace(/^.+,/, "");
+        // //   setBase64Image(base64);
+        // // };
+        // // reader.readAsDataURL(zdjecie);
+        // setSelectedImage(zdjecie);
+      }
+    },
+    [
+      id,
+      isLoading,
+      data?.przepis,
+      setValue,
+      data?.skladniki,
+      data?.tagi,
+      data?.zdjecie,
+      data?.id_przepisu,
+    ]
+  );
 
   useEffect(function () {
     axios.get("http://localhost:5000/api/ingredients").then((res) => {
@@ -85,17 +137,26 @@ export default function AddNewRecipe() {
       zdjecie: base64Image,
     };
     console.log(recipeObj);
-    sendRecipe({
-      obj: recipeObj,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      userId: (user as any).id_uzytkownika,
-    });
+
+    if (id) {
+      modifyRecipe({
+        obj: recipeObj,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        recipeId: id,
+      });
+    } else {
+      sendRecipe({
+        obj: recipeObj,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        userId: (user as any).id_uzytkownika,
+      });
+    }
   };
 
   return (
     <div className="py-16 md:pt-[72px] flex justify-center items-center flex-col gap-4 dark:bg-bgDark mt-10">
       <p className="text-center text-lg dark:text-bgWhite">
-        Dodaj swój nowy przepis
+        {id ? "Zmodyfikuj swój przepis" : "Dodaj swój nowy przepis"}
       </p>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -109,6 +170,7 @@ export default function AddNewRecipe() {
               label="Tytuł przepisu"
               error={errors?.title?.message}
               register={register}
+              initial={id ? true : false}
             />
             <FormInput
               id="time"
@@ -116,6 +178,7 @@ export default function AddNewRecipe() {
               label="Czas przygotowania (min)"
               error={errors?.time?.message}
               register={register}
+              initial={id ? true : false}
             />
             <FormInput
               id="price"
@@ -123,6 +186,7 @@ export default function AddNewRecipe() {
               label="Szacowana cena dania (zł)"
               error={errors?.price?.message}
               register={register}
+              initial={id ? true : false}
             />
           </div>
           <div className="relative w-full">
@@ -150,15 +214,26 @@ export default function AddNewRecipe() {
             <div className="py-7">
               {recipeIngredients.length > 0 ? (
                 recipeIngredients.map((item, i) => (
-                  <div
+                  <button
+                    type="button"
+                    onClick={() => {
+                      console.log(item);
+                      setRecipeIngredients((prevIngredients) =>
+                        prevIngredients.filter(
+                          (prevItem) =>
+                            prevItem.ingredient.id_skladnik !==
+                            item.ingredient.id_skladnik
+                        )
+                      );
+                    }}
                     className="flex gap-5 justify-start items-center my-2 py-2"
                     key={i}
                   >
                     <div className="w-2 h-2 rounded-full bg-main"></div>
                     <p className="text-bgDark dark:text-bgWhite">
-                      {item.ingredient.nazwa} - {item.amount}
+                      {item.ingredient?.nazwa} - {item?.amount}
                     </p>
-                  </div>
+                  </button>
                 ))
               ) : (
                 <div className="w-full py-10 flex justify-center items-center">
@@ -195,12 +270,20 @@ export default function AddNewRecipe() {
             {recipeTags.length > 0 ? (
               <div className="flex flex-wrap justify-center items-center gap-5 py-8">
                 {recipeTags.map((item, i) => (
-                  <div
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setRecipeTags((prevTags) =>
+                        prevTags.filter(
+                          (prevItem) => prevItem.id_tagu !== item.id_tagu
+                        )
+                      );
+                    }}
                     key={i}
                     className="px-3 py-2 rounded-lg bg-bgWhiteHover dark:bg-bgDarkHover text-bgDark dark:text-bgWhite "
                   >
                     <p>{item.nazwa}</p>
-                  </div>
+                  </button>
                 ))}
               </div>
             ) : (
@@ -233,7 +316,7 @@ export default function AddNewRecipe() {
             </p>
             <label className="block text-center w-[250px] border-main border-solid border-2 py-2 text-main uppercase tracking-wide  rounded-full transition-all duration-300 hover:bg-main hover:text-bgWhite cursor-pointer my-10">
               <span className="">
-                {selectedImage ? "Zmień zdjęcie" : "Dodaj zdjęcie"}
+                {id || selectedImage ? "Zmień zdjęcie" : "Dodaj zdjęcie"}
               </span>
               <input
                 type="file"
@@ -244,9 +327,13 @@ export default function AddNewRecipe() {
               />
             </label>
             <div className="w-full">
-              {selectedImage ? (
+              {id || selectedImage ? (
                 <img
-                  src={selectedImage}
+                  src={
+                    !selectedImage
+                      ? `http://localhost:5000/api/recipes/image/${id}`
+                      : selectedImage
+                  }
                   alt="Twoje wybrane zdjęcie, jeśli nie działa to zepsułem coś :("
                 />
               ) : (
@@ -258,7 +345,7 @@ export default function AddNewRecipe() {
             type="submit"
             className="w-[300px] bg-main hover:bg-mainHover py-2 text-white uppercase tracking-wide  rounded-full transition-all duration-300"
           >
-            Dodaj przepis
+            {id ? "Zmodyfikuj przepis" : "Dodaj przepis"}
           </button>
         </div>
       </form>
