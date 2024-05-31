@@ -9,7 +9,7 @@ const Carousel: React.FC = () => {
   const sliderRef = useRef<Slider | null>(null);
 
   const { data, isLoading } = useGetRecipes();
-  const firstFive = data?.slice(0, 5);
+  const firstFive = data?.slice(0, 6);
   const settings = {
     dots: false,
     infinite: true,
@@ -61,6 +61,7 @@ const Carousel: React.FC = () => {
                   <img
                     src={`http://localhost:5000/api/recipes/image/${recipe.id_przepisu}`}
                     alt="Photo 1"
+                    className=" aspect-[5/3]"
                   />
                 }
               </div>
