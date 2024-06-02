@@ -10,6 +10,7 @@ import { DarkModeContext } from "../context/DarkModeContext";
 import axios from "axios";
 import toast from "react-hot-toast";
 axios.defaults.withCredentials = true;
+import Spinner from "../ui/Spinner";
 
 export default function Account() {
   const {
@@ -50,63 +51,77 @@ export default function Account() {
     if (recipeData) {
       setRecipeCount(recipeData.length);
     }
-  }, []);
+  }, [recipeData]);
 
   if (userIsLoading || recipeIsLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="h-screen w-full flex justify-center items-center dark:bg-bgDark">
+        <Spinner />
+      </div>
+    );
   }
 
   if (!queryClient.getQueryData(["user"])) navigate("/login");
 
   return (
-    <div className="pt-16 md:pt-[72px] dark:bg-bgDark flex flex-col items-center justify-around text-black dark:text-white h-screen text-xl">
-      <h1 className="text-3xl font-semibold">Moje konto</h1>
-      <div className=" flex flex-col justify-around items-center [&>*]:py-1">
-        <GiCook
-          className=" text-main rounded-full border-4 border-main"
-          size={60}
-        />
-        <p>
-          Witaj {userData?.imie} {userData?.nazwisko}
-        </p>
-        <p>Opublikowałeś {recipeCount} przepisów.</p>
-      </div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 md400:gap-6 md600:gap-8 xs:w-full xs:px-10 md500:w-[450px] "
-      >
-        <p className="text-center">Zmień hasło</p>
-        <div className="w-full">
-          <FormInput
-            id="oldPassword"
-            type="password"
-            label="Obecne hasło"
-            error={errors?.password?.message}
-            register={register}
-          />
+    <div className="pt-16 md:pt-[72px] bg-bgWhite dark:bg-bgDark flex flex-col items-center justify-around text-bgDark dark:text-bgWhite h-screen text-xl">
+      {userIsLoading || recipeIsLoading ? (
+        <div className="h-screen w-full flex justify-center items-center">
+          <Spinner />
         </div>
-        <div className="">
-          <FormInput
-            id="newPassword"
-            type="password"
-            label="Nowe hasło"
-            error={errors?.password?.message}
-            register={register}
-          />
-        </div>
-        <div className="mb-6">
-          <FormInput
-            id="newRepPassword"
-            type="password"
-            label="Powtórz nowe hasło"
-            error={errors?.password?.message}
-            register={register}
-          />
-        </div>
-        <button className="w-full bg-main hover:bg-mainHover py-2 text-white uppercase tracking-widest font-light rounded-full transition-all duration-300">
-          Zmień hasło
-        </button>
-      </form>
+      ) : (
+        <>
+          <h1 className="text-3xl font-semibold">Moje konto</h1>
+          <div className=" flex flex-col justify-around items-center [&>*]:py-1">
+            <GiCook
+              className=" text-main rounded-full border-4 border-main"
+              size={60}
+            />
+            <p>
+              Witaj {userData?.imie} {userData?.nazwisko}
+            </p>
+            <p>Opublikowałeś {recipeCount} przepisów.</p>
+          </div>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4 md400:gap-6 md600:gap-8 xs:w-full xs:px-10 md500:w-[450px] "
+          >
+            <p className="text-center font-semibold">Zmień hasło</p>
+            <div className="w-full">
+              <div className="mb-4">
+                <FormInput
+                  id="oldPassword"
+                  type="password"
+                  label="Obecne hasło"
+                  error={errors?.oldPassword?.message}
+                  register={register}
+                />
+              </div>
+              <div className="mb-4">
+                <FormInput
+                  id="newPassword"
+                  type="password"
+                  label="Nowe hasło"
+                  error={errors?.newPassword?.message}
+                  register={register}
+                />
+              </div>
+              <div className="mb-4">
+                <FormInput
+                  id="newRepPassword"
+                  type="password"
+                  label="Powtórz nowe hasło"
+                  error={errors?.newRepPassword?.message}
+                  register={register}
+                />
+              </div>
+            </div>
+            <button className="w-full bg-main hover:bg-mainHover py-2 text-white uppercase tracking-widest font-light rounded-full transition-all duration-300">
+              Zmień hasło
+            </button>
+          </form>
+        </>
+      )}
     </div>
   );
 }
