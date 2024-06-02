@@ -56,7 +56,7 @@ export default function Account() {
       setRecipeCount(recipeData.length);
       console.log("aa")
     }
-  }, []);
+  }, [isLoading, recipeData]);
 
   if (isLoading) {
     return (
