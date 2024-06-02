@@ -1,4 +1,5 @@
 import {Express} from "express";
+import {comparePasswords} from "./hashing";
 const { hashPassword } = require("./hashing");
 const bodyParser = require("body-parser");
 const pool = require("./db");
@@ -72,7 +73,7 @@ module.exports = function(app : Express) {
 
     app.patch("/api/user/changePassword", bodyParser.json(), async (req : any, res) => {
         try {
-            const {password} = req.body;
+            const {password, oldPassword} = req.body;
             const user = await pool.query(
                 "SELECT * FROM public.uzytkownik WHERE email = $1",
                 [req.session.user]
@@ -80,6 +81,11 @@ module.exports = function(app : Express) {
             if (user.rowCount != 1) {
                 console.error("Session invalid");
                 res.status(401).json({ error: "Invalid session" });
+                return;
+            }
+            if (!comparePasswords(oldPassword, user.rows[0].haslo)) {
+                console.error("Incorrect old password!");
+                res.status(400).json({ error: "Old password incorrect!" });
                 return;
             }
             const hpass = await hashPassword(password);
