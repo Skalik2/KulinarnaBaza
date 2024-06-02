@@ -54,12 +54,12 @@ module.exports = function (app: Express) {
 
   app.get("/api/mealplanner/:userId/:dayFrom/:dayTo", bodyParser.json(), async (req: any, res) => {
       try {
-        let result: any[] = []
-        result = await pool.query(
+        //let result: any[] = []
+        const result = await pool.query(
           `SELECT plan.id_przepisu, przepis.tytul, plan.data FROM plan JOIN przepis on plan.id_przepisu = przepis.id_przepisu WHERE plan.id_uzytkownika = ${req.params.userId} AND plan.data BETWEEN '${req.params.dayFrom}' AND '${req.params.dayTo}'`
         );
         if (result === undefined) {
-          result = []
+          //result = []
           res.status(200).json({ response: result });
         }
         res
