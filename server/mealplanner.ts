@@ -52,19 +52,16 @@ module.exports = function (app: Express) {
     }
   );
 
-  app.get("/api/mealplanner/:userId", bodyParser.json(), async (req: any, res) => {
+  app.get("/api/mealplanner/:userId/:dayFrom/:dayTo", bodyParser.json(), async (req: any, res) => {
       try {
-        let result = []
-        if (req.body.dateFrom !== undefined && req.body.dateTo !== undefined){
+        let result: any[] = []
         result = await pool.query(
-          `SELECT plan.id_przepisu, przepis.tytul, plan.data FROM plan JOIN przepis on plan.id_przepisu = przepis.id_przepisu WHERE plan.id_uzytkownika = ${req.params.userId} AND plan.data BETWEEN '${req.body.dateFrom}' AND '${req.body.dateTo}'`
-        );}
-        else {
-        result = await pool.query(
-          `SELECT plan.id_przepisu, przepis.tytul, plan.data FROM plan JOIN przepis on plan.id_przepisu = przepis.id_przepisu WHERE plan.id_uzytkownika = ${req.params.userId}`
-        );}
-        
-
+          `SELECT plan.id_przepisu, przepis.tytul, plan.data FROM plan JOIN przepis on plan.id_przepisu = przepis.id_przepisu WHERE plan.id_uzytkownika = ${req.params.userId} AND plan.data BETWEEN '${req.params.dayFrom}' AND '${req.params.dayTo}'`
+        );
+        if (result === undefined) {
+          result = []
+          res.status(200).json({ response: result });
+        }
         res
           .status(200)
           .json({

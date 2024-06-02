@@ -376,6 +376,9 @@ module.exports = function (app: Express) {
         `DELETE FROM skladnik_w_przepisie WHERE id_przepisu = ${req.params.recipeId}`
       );
       await pool.query(
+        `DELETE FROM plan WHERE id_przepisu = ${req.params.recipeId}`
+      );
+      await pool.query(
         `DELETE FROM przepis WHERE id_przepisu = ${req.params.recipeId}`
       );
       const filename = `./images/recipeid_${req.params.recipeId}_thumbnail.png`
