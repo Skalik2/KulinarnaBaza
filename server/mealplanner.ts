@@ -55,9 +55,9 @@ module.exports = function (app: Express) {
   app.get("/api/mealplanner/:userId", bodyParser.json(), async (req: any, res) => {
       try {
         let result = []
-        if (req.body.date !== undefined){
+        if (req.body.dateFrom !== undefined && req.body.dateTo !== undefined){
         result = await pool.query(
-          `SELECT plan.id_przepisu, przepis.tytul, plan.data FROM plan JOIN przepis on plan.id_przepisu = przepis.id_przepisu WHERE plan.id_uzytkownika = ${req.params.userId} AND plan.data = '${req.body.date}'`
+          `SELECT plan.id_przepisu, przepis.tytul, plan.data FROM plan JOIN przepis on plan.id_przepisu = przepis.id_przepisu WHERE plan.id_uzytkownika = ${req.params.userId} AND plan.data BETWEEN '${req.body.dateFrom}' AND '${req.body.dateTo}'`
         );}
         else {
         result = await pool.query(

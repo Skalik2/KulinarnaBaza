@@ -112,7 +112,7 @@ export default function Recipes() {
 
   return (
     <>
-      <div className=" bg-bgWhite dark:bg-bgDark mt-10 py-16">
+      <div className=" bg-bgWhite dark:bg-bgDark mt-10 py-16 min-h-screen">
         {userAuth ? (
           <div className="w-full flex justify-center items-center flex-col gap-6 md:gap-10 p-4 my-10 md:my-20">
             <p className="text-xl md:text-3xl dark:text-bgWhite">

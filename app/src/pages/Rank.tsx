@@ -10,7 +10,7 @@ export default function Rank() {
   console.log(data);
   return (
     <>
-      <div className="pt-16 md:pt-[72px] bg-bgWhite dark:bg-bgDark px-6">
+      <div className="pt-16 md:pt-[72px] bg-bgWhite dark:bg-bgDark px-6 min-h-screen">
         <div className="w-full flex justify-center items-center flex-col gap-6 md:gap-10 p-4 my-10 md:my-20 pt-16 md:pt-[72px]">
           <p className="text-xl md:text-3xl dark:text-bgWhite">
             Ranking najlepszych przepisów naszych użytkowników

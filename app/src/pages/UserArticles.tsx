@@ -54,7 +54,7 @@ export default function UserArticles() {
     setPage(newPage);
   };
   return (
-    <div className="pt-16 md:pt-[72px] dark:bg-bgDark flex flex-col items-center bg-bgWhite">
+    <div className="pt-16 md:pt-[72px] dark:bg-bgDark flex flex-col items-center bg-bgWhite min-h-screen">
       <div className="flex flex-col md:flex-row gap-6 justify-between items-center w-full mx-auto max-w-7xl mt-16 px-4 md:px-10">
         <div>
           <h3 className="font-semibold text-2xl md:text-3xl text-bgDark dark:text-bgWhite text-center">

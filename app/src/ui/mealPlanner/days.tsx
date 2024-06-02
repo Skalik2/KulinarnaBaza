@@ -41,8 +41,12 @@ const useWeek = () => {
   return { week, setWeekOffset };
 };
 
-export default function Days() {
+export default function Days({ onWeekChange } : { onWeekChange: any}): JSX.Element {
   const { week, setWeekOffset } = useWeek();
+  useEffect(() => {
+    onWeekChange(week);
+  }, [week, onWeekChange]);
+
   const handleWeekChange = (offset: number): void => {
     setWeekOffset((prevOffset: number) => prevOffset + offset);
   };

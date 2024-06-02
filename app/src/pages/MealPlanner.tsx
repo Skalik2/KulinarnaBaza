@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import Days from "../ui/mealPlanner/days";
-import axios from "axios";
 import MealPlannerCard from "../ui/mealPlanner/mealPlannerCard";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetPlannerMeals } from "../hooks/useGetPlannerMeals";
-import { useGetRecipe } from "../hooks/useGetRecipe";
 import Spinner from "../ui/Spinner";
 
 export default function MealPlanner() {
@@ -13,8 +11,22 @@ export default function MealPlanner() {
   const queryClient = useQueryClient();
 
   const user = queryClient.getQueryData<{ id_uzytkownika: string }>(["user"]);
-  const userId = user?.id_uzytkownika || null;
-  const { data: recipeData, isLoading } = useGetPlannerMeals(userId);
+  const userId: any = user?.id_uzytkownika || null;
+  const [dayFrom, setdayFrom] = useState("");
+  const [dayTo, setdayTo] = useState("");
+  const { data: recipeData, isLoading } = useGetPlannerMeals(userId, dayFrom, dayTo);
+  
+  const handleWeekChange = (weekData: any) => {
+    let tempDateFrom = new Date(weekData[0]?.dateThisWeek?.toISOString().split('T')[0]);
+    let tempDateTo = new Date(weekData[6]?.dateThisWeek?.toISOString().split('T')[0]);
+    tempDateFrom.setDate(tempDateFrom.getDate() + 1);
+    tempDateTo.setDate(tempDateTo.getDate() + 1);
+    let tempDateFromString = tempDateFrom.getFullYear() + "-" + ((tempDateFrom.getMonth()+1 <= 9) ? "0" : "" ) + (tempDateFrom.getMonth()+1) + "-" + ((tempDateFrom.getDate() <= 9) ? "0" : "" ) + tempDateFrom.getDate();
+    let tempDateToString = tempDateTo.getFullYear() + "-" + ((tempDateTo.getMonth()+1 <= 9) ? "0" : "" ) + (tempDateTo.getMonth()+1) + "-" + ((tempDateTo.getDate() <= 9) ? "0" : "" ) + tempDateTo.getDate();
+    setdayFrom(tempDateFromString);
+    setdayTo(tempDateToString);
+    console.log("od: ",tempDateFromString,"do: ", tempDateToString);
+  };
   
   const [data, setData] = useState(null);
 
@@ -27,11 +39,11 @@ export default function MealPlanner() {
       }
     }
   }, [isLoading, recipeData]);
-
+ 
   return (
     <div className="bg-bgWhite text-bgDark dark:bg-bgDark dark:text-bgWhite min-h-screen">
       <div className="flex justify-center py-4 md:py-10">
-        <Days />
+        <Days onWeekChange={handleWeekChange} />
       </div>
       <div className="flex flex-wrap justify-center gap-2 md:gap-4">
       {isLoading && !data && userId ? (
@@ -41,7 +53,7 @@ export default function MealPlanner() {
       ) : (
         data?.map((item: any) => (
           <MealPlannerCard
-            key={userId}
+            key={item.id_przepisu}
             userId={userId}
             meal={item}
             data={item.data.substring(0, 10)}

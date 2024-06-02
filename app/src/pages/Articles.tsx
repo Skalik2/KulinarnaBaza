@@ -61,7 +61,7 @@ export default function Articles() {
 
   return (
     <>
-      <div className="pt-16 md:pt-[72px] dark:bg-bgDark flex flex-col items-center">
+      <div className="pt-16 md:pt-[72px] dark:bg-bgDark flex flex-col items-center min-h-screen">
         {" "}
         {userAuth ? (
           <div className="w-full flex justify-center items-center flex-col gap-6 md:gap-10 p-4 my-10 md:my-20">

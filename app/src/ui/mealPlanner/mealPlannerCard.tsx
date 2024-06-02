@@ -1,6 +1,9 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useGetRecipe } from "../../hooks/useGetRecipe";
 import Spinner from "../Spinner";
 import RecipeCard from "../recipes/RecipeCard";
+import toast from "react-hot-toast";
+import { Location } from "react-router-dom";
 
 interface RecipeComponent {
   userId: string | null;
@@ -9,12 +12,12 @@ interface RecipeComponent {
 }
 
 const MealPlannerCard = ({ userId, meal, data }: RecipeComponent) => {
+  const queryClient = useQueryClient();
   const { data: recipeData, isLoading } = useGetRecipe(meal.id_przepisu);
-  const formattedDate = new Date(data)
-  formattedDate.setDate(formattedDate.getDate() + 1)
-  const dateToSend = formattedDate.getFullYear() + "-" + (formattedDate.getMonth() + 1) + "-" + formattedDate.getDate()
+  let formattedDate = new Date(data);
+  formattedDate.setDate(formattedDate.getDate() + 1);
+  const dateToSend = formattedDate.getFullYear() + "-" + ((formattedDate.getMonth()+1 <= 9) ? "0" : "" ) + (formattedDate.getMonth()+1) + "-" + ((formattedDate.getDate() <= 9) ? "0" : "" )+ formattedDate.getDate();
   function handleClick() {
-    console.log(data)
     fetch(`http://localhost:5000/api/mealplanner/${userId}`, {
       method: "DELETE",
       headers: {
@@ -28,6 +31,8 @@ const MealPlannerCard = ({ userId, meal, data }: RecipeComponent) => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        queryClient.invalidateQueries({ queryKey: ["mealplanner", userId] });
+        toast.success("Przepis usunięty z planu dnia!");
       });
   }
   
@@ -50,7 +55,7 @@ const MealPlannerCard = ({ userId, meal, data }: RecipeComponent) => {
         />
       </div>
       <div className="px-4 flex flex-row justify-between items-center">
-        <p className="text-lg">{data.substring(0, 10)}</p>
+        <p className="text-lg">{dateToSend}</p>
         <button onClick={handleClick} key={recipeData?.przepis[0].id_przepisu} className="bg-main my-4 text-bgWhite rounded-full px-5 py-2 hover:bg-mainHover transition-colors duration-300">Usuń</button>
       </div>
     </div>

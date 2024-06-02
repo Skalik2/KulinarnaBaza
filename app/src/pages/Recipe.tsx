@@ -19,6 +19,7 @@ import { GiCook } from "react-icons/gi";
 import { useGetRecipeComments } from "../hooks/useGetRecipeComments";
 import { useAddRecipeComment } from "../hooks/useAddRecipeComment";
 import Footer from "../ui/footer/Footer";
+import CalendarPlanner from "../ui/recipes/CalendarPlanner";
 
 interface recipeInterface {
   autor: number;
@@ -49,6 +50,7 @@ interface dataInterface {
 }
 
 export default function Recipe() {
+  const [date, setDate] = useState(new Date());
   const params = useParams();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -169,6 +171,7 @@ export default function Recipe() {
                 <h3 className="font-semibold text-3xl md:text-4xl text-bgDark dark:text-bgWhite">
                   {recipeData.przepis[0].tytul}
                 </h3>
+                <CalendarPlanner recipeId={recipeData.przepis[0].id_przepisu} userId={user?.id_uzytkownika}/>
                 <button
                   onClick={handleFav}
                   className="text-3xl text-red-500 p-3 hover:text-mainHover transition-colors duration-300"
