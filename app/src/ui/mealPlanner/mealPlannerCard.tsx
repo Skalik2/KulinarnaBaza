@@ -41,7 +41,7 @@ const MealPlannerCard = ({ userId, meal, data }: RecipeComponent) => {
       <Spinner />
     </div>
   }
-
+  console.log(recipeData?.przepis[0])
   return (
     <div className="border-2 border-[rgb(255,48,0)] rounded-lg">
       <div className="filter hover:saturate-150">
@@ -49,7 +49,7 @@ const MealPlannerCard = ({ userId, meal, data }: RecipeComponent) => {
           imageSrc={`http://localhost:5000/api/recipes/image/${recipeData?.przepis[0].id_przepisu}`}
           title={recipeData?.przepis[0].tytul}
           time={recipeData?.przepis[0].czas_przygotowania || 0}
-          link={recipeData?.przepis[0].link}
+          link={`/recipes/${recipeData?.przepis[0].id_przepisu}/${recipeData?.przepis[0].tytul}`}
           views={recipeData?.przepis[0].wyswietlenia || 0}
           price={recipeData?.przepis[0].cena || 0}
         />

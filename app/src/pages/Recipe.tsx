@@ -300,7 +300,7 @@ export default function Recipe() {
                 <button
                   onClick={handleAddComment}
                   className="w-[300px] bg-main hover:bg-mainHover py-2 text-white uppercase tracking-wide  rounded-full transition-all duration-300 mt-3"
-                  disabled={comment.length === 0}
+                  disabled={comment.trim().length === 0}
                   >
                   Dodaj komentarz
                 </button>

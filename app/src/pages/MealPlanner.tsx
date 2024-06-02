@@ -60,14 +60,14 @@ export default function MealPlanner() {
           <Spinner />
         </div>
       ) : (
-        data?.map((item: any) => (
-          <MealPlannerCard
+        data?.map((item: any) => {
+          return <MealPlannerCard
             key={item.id_przepisu}
             userId={userId}
             meal={item}
             data={item.data.substring(0, 10)}
           />
-        ))
+        })
       )}
       </div>
     </div>
