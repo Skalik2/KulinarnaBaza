@@ -6,7 +6,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../ui/FormInput";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { DarkModeContext } from "../context/DarkModeContext";
 import axios from "axios";
 import toast from "react-hot-toast";
 axios.defaults.withCredentials = true;
@@ -18,42 +17,48 @@ export default function Account() {
     handleSubmit,
     formState: { errors },
   } = useForm<FieldValues>();
-  const { isDarkMode } = useContext(DarkModeContext);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    axios
-      .post(
-        "http://localhost:5000/api/user/changePassword",
-        {
-          password: data.password,
-        },
-        {
-          withCredentials: true,
-        }
-      )
-      .then(() => {
-        window.location.href = "/";
-      })
-      .catch(() => {
-        toast.error("Podaj poprawne dane");
-      });
+    if (data.newPassword === data.newRepPassword) {
+      axios
+        .patch(
+          "http://localhost:5000/api/user/changePassword",
+          {
+            password: data.newPassword,
+          },
+          {
+            withCredentials: true,
+          }
+        )
+        .then(() => {
+          window.location.href = "/";
+        })
+        .catch(() => {
+          toast.error("Podaj poprawne dane");
+        });
+    }
+    else{
+      console.log("dosyc")
+      toast.error("Hasła się nie zgadzają");
+    }
   };
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { data: userData, isLoading: userIsLoading } = useUser();
-  const { data: recipeData, isLoading: recipeIsLoading } = useGetUserRecipes(
-    userData?.id
+  const { data: userData } = useUser();
+  const { data: recipeData, isLoading } = useGetUserRecipes(
+    userData?.id_uzytkownika
   );
   const [recipeCount, setRecipeCount] = useState(0);
 
   useEffect(() => {
     if (recipeData) {
       setRecipeCount(recipeData.length);
+      console.log("aa")
     }
-  }, [recipeData]);
+  }, []);
 
-  if (userIsLoading || recipeIsLoading) {
+  if (isLoading) {
     return (
       <div className="h-screen w-full flex justify-center items-center dark:bg-bgDark">
         <Spinner />
@@ -65,7 +70,7 @@ export default function Account() {
 
   return (
     <div className="pt-16 md:pt-[72px] bg-bgWhite dark:bg-bgDark flex flex-col items-center justify-around text-bgDark dark:text-bgWhite h-screen text-xl">
-      {userIsLoading || recipeIsLoading ? (
+      {isLoading ? (
         <div className="h-screen w-full flex justify-center items-center">
           <Spinner />
         </div>
@@ -93,7 +98,7 @@ export default function Account() {
                   id="oldPassword"
                   type="password"
                   label="Obecne hasło"
-                  error={errors?.oldPassword?.message}
+                  error={errors?.password?.message}
                   register={register}
                 />
               </div>
@@ -102,7 +107,7 @@ export default function Account() {
                   id="newPassword"
                   type="password"
                   label="Nowe hasło"
-                  error={errors?.newPassword?.message}
+                  error={errors?.password?.message}
                   register={register}
                 />
               </div>
@@ -111,7 +116,7 @@ export default function Account() {
                   id="newRepPassword"
                   type="password"
                   label="Powtórz nowe hasło"
-                  error={errors?.newRepPassword?.message}
+                  error={errors?.password?.message}
                   register={register}
                 />
               </div>
