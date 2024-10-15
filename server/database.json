@@ -1,7 +1,7 @@
 {
     "dev": {
         "driver": "pg",
-        "host": "localhost",
+        "host": "postgresql_db",
         "user": "kulinarna",
         "password": "admin",
         "database": "kulinarnabaza",

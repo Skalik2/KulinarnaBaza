@@ -975,4 +975,4 @@ ALTER TABLE ONLY public.skladnik_w_lodowce
     ADD CONSTRAINT "id_uzytkownika_FK" FOREIGN KEY (id_uzytkownika) REFERENCES public.uzytkownik(id_uzytkownika) NOT VALID;
 
 ALTER TABLE ONLY public.komentarz
-    ADD CONSTRAINT "id_uzytkownika_FK" FOREIGN KEY (id_uzytkownika) REFERENCES public.uzytkownik(id_uzytkownika)
+    ADD CONSTRAINT "id_uzytkownika_FK" FOREIGN KEY (id_uzytkownika) REFERENCES public.uzytkownik(id_uzytkownika);

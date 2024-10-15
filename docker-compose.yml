@@ -30,11 +30,11 @@ services:
         condition: service_healthy
     environment:
       - POSTGRESQL_HOST=postgresql_db
-      - POSTGRESQL_USERNAME=seed
+      - POSTGRESQL_USERNAME=kulinarna
       - POSTGRESQL_PASSWORD=admin
       - POSTGRESQL_DATABASE=kulinarnabaza
       - PGHOST=postgresql_db
-      - PGUSER=seed
+      - PGUSER=kulinarna
       - PGPASSWORD=admin
       - PGDATABASE=kulinarnabaza
     networks:
