@@ -4,6 +4,8 @@ import path from "path";
 const pool = require("./db");
 import cors from 'cors';
 const app: Express = express();
+import { Flyway } from "node-flyway";
+
 
 const clientPort = 3000
 
@@ -31,6 +33,29 @@ app.get("/api",(req: Request, res: Response) =>{
         res.json({"testServera": ["dziala", "nie dziala", "może dziala"]});
 
 })
+
+
+const flyway = new Flyway(
+        {
+            url:"jdbc:postgresql://localhost:5432/kulinarnabaza",
+            user:"kulinarna",
+            password:"admin",
+            defaultSchema: "public",
+            migrationLocations: ["./migrations"]
+        }
+    );
+    
+    
+flyway.migrate().then(response => {
+        if(!response.success) {
+          // Handle failure case
+          throw new Error(`Unable to execute migrate command.`);
+        }
+        else {
+          console.log("migrated");
+        }
+    });
+    
 
 
 

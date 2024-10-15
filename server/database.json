@@ -1,0 +1,10 @@
+{
+    "dev": {
+        "driver": "pg",
+        "host": "localhost",
+        "user": "kulinarna",
+        "password": "admin",
+        "database": "kulinarnabaza",
+        "port": "5432"
+    }
+}

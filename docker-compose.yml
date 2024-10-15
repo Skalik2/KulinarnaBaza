@@ -1,19 +1,72 @@
-version: '3.8'
+
 services:
-  backend-container:
-    build: ./server
+  kulinarna-app:    
+    build: ./app
+    container_name: kulinarna-app
+    hostname: kulinarna-app
     ports:
-      - "5000:5000"
-    volumes:
-      - ./server:/app:ro
-      - /app/node_modules
+      - 3000:3000
+    image: kulinarna-app
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      kulinarna-server:
+        condition: service_started
+    networks:
+      - kulinarna_net
+
+  kulinarna-server:
+    build: ./server
+    container_name: kulinarna-server
+    hostname: kulinarna-server
+    command: "db-migrate up"
     env_file:
       - ./server/.env
-  frontend-container:
-    build: ./app
-    depends_on:
-      - backend-container
     ports:
-      - "3000:3000"
+      - 5000:5000
+    image: kulinarna-server
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    environment:
+      - POSTGRESQL_HOST=postgresql_db
+      - POSTGRESQL_USERNAME=seed
+      - POSTGRESQL_PASSWORD=admin
+      - POSTGRESQL_DATABASE=kulinarnabaza
+      - PGHOST=postgresql_db
+      - PGUSER=seed
+      - PGPASSWORD=admin
+      - PGDATABASE=kulinarnabaza
+    networks:
+      - kulinarna_net
+
+  postgresql:
+    container_name: postgresql_db
+    hostname: postgresql_db
+    image: postgres:16.0-alpine
+    command: postgres -c 'max_connections=200'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: kulinarna
+      PGPASSWORD: admin
+      PGUSER: kulinarna
+      PGDATABASE: kulinarnabaza
+    ports:
+      - "5432:5432"
     volumes:
-      - ./app:/app
+      - ./docker/postgresql:/data
+      - ./docker/postgresql-init:/docker-entrypoint-initdb.d
+    networks:
+      - kulinarna_net
+
+networks:
+  kulinarna_net:
+    driver: bridge
+    # ipam:
+    #   config:
+    #     - subnet: 192.168.10.0/24
