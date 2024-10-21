@@ -19,9 +19,8 @@ services:
     build: ./server
     container_name: kulinarna-server
     hostname: kulinarna-server
-    command: "db-migrate up"
-    env_file:
-      - ./server/.env
+    # env_file:
+    #   - ./server/.env
     ports:
       - 5000:5000
     image: kulinarna-server
@@ -43,7 +42,7 @@ services:
   postgresql:
     container_name: postgresql_db
     hostname: postgresql_db
-    image: postgres:16.0-alpine
+    image: postgres:16.2-alpine
     command: postgres -c 'max_connections=200'
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
@@ -67,6 +66,6 @@ services:
 networks:
   kulinarna_net:
     driver: bridge
-    # ipam:
-    #   config:
-    #     - subnet: 192.168.10.0/24
+    ipam:
+      config:
+        - subnet: 192.168.10.0/24

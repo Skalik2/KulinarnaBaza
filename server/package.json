@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/server.js",
-    "dev": "nodemon -L dist/server.js",
+    "dev": "db-migrate up; nodemon -L dist/server.js",
     "watch": "tsc -w",
     "build": "rimraf dist && npx tsc"
   },
