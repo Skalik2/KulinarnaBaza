@@ -1,4 +1,6 @@
-# KulinarnaBaza
+# KulinarnaBaza  
+## Uruchomienie projektu  
+docker compose up --build
 ## Opis
 Celem projektu było stworzenie aplikacji kulinarnej, czyli narzędzia dla miłośników
 gotowania, które oferuje wiele funkcji ułatwiających organizację i przygotowywanie posiłków.
