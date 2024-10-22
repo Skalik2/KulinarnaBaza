@@ -5,6 +5,7 @@ const pool = require("./db");
 import cors from 'cors';
 const app: Express = express();
 
+
 const clientPort = 3000
 
 const corsOptions = {
@@ -31,6 +32,7 @@ app.get("/api",(req: Request, res: Response) =>{
         res.json({"testServera": ["dziala", "nie dziala", "może dziala"]});
 
 })
+
 
 
 

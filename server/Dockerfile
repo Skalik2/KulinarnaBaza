@@ -1,16 +1,15 @@
-FROM node:15
+FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package.json .
-
-RUN npm install \
-&& npm install typescript -g
-
 COPY . .
 
-ENV PORT 5000
+RUN npm install \
+&& npm install typescript -g \
+&& npm install -g db-migrate \
+&& npm install db-migrate-pg \
+&& npm run build
 
-EXPOSE ${PORT}
+EXPOSE 5000:5000
 
 CMD [ "npm", "run", "dev" ]
