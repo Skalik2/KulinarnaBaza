@@ -1,10 +1,9 @@
 import express, { Express, Request, Response } from "express";
 import bodyParser from "body-parser";
 import path from "path";
-import pool from "./db";
+const pool = require("./db");
 import cors from 'cors';
 const app: Express = express();
-import { Flyway } from "node-flyway";
 
 
 const clientPort = 3000
