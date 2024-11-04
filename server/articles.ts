@@ -16,7 +16,7 @@ declare global {
 module.exports = function (app: Express) {
   app.use(
     session({
-      secret: "whatdoIwriteherepleasetellmetutorials",
+      secret: "AVerySecretStringForASecret",
       resave: false,
       saveUninitialized: true,
       cookie: { secure: false },
@@ -33,9 +33,7 @@ module.exports = function (app: Express) {
   });
 
   app.post(
-    "/api/articles/:userId",
-    bodyParser.json(),
-    async (req: any, res) => {
+    "/api/articles/:userId", bodyParser.json(), async (req: any, res) => {
       try {
         let id = await pool.query(`SELECT max(id_artykulu) FROM artykul`);
         id = id.rows[0].max + 1;

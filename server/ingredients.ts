@@ -14,7 +14,7 @@ declare global {
 module.exports = function (app: Express) {
   app.use(
     session({
-      secret: "whatdoIwriteherepleasetellmetutorials",
+      secret: "AVerySecretStringForASecret",
       resave: false,
       saveUninitialized: true,
       cookie: { secure: false },

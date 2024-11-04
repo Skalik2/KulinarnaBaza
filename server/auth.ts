@@ -46,7 +46,7 @@ module.exports = function(app : Express) {
             console.log("Logged in successfully!")
             req.session.user = email;
             req.session.authenticated = true;
-            res.status(256).json( {"response": "Logged in successfully!"} );
+            res.status(201).json( {"response": "Logged in successfully!"} );
 
         }
         catch (err) {
@@ -87,7 +87,7 @@ module.exports = function(app : Express) {
             req.session.destroy()
             req.session = null;
             console.log("Logged out!");
-            res.status(256).json( {"response": "Logged out successfully!"} );
+            res.status(201).json( {"response": "Logged out successfully!"} );
         }
         catch (err) {
             console.error("Error when logging out:", err);
@@ -118,7 +118,7 @@ module.exports = function(app : Express) {
         
             req.session.authenticated = true;
             req.session.user = email;
-            res.status(256).json( {"response": "Registered successfully!"} );
+            res.status(201).json( {"response": "Registered successfully!"} );
         }   
         catch (err) {
             console.error("Error when registering:", err);
