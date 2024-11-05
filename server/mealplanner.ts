@@ -26,6 +26,21 @@ module.exports = function (app: Express) {
     bodyParser.json(),
     async (req: any, res) => {
       try {
+          {
+              if (req.session == null || req.session.user == null || req.session.authenticated == false) {
+                  res.status(401).json({response: "User session is not valid!"});
+                  return;
+              }
+
+              const result = await pool.query(
+                  "SELECT id_uzytkownika FROM public.uzytkownik WHERE email = $1",
+                  [req.session.user]
+              );
+              if (result.rowCount != 1 || req.params.userId != result.rows[0].id_uzytkownika) {
+                  res.status(401).json({response: "User session is not valid!"});
+                  return;
+              }
+          }
         await pool.query(
           `INSERT INTO plan VALUES (${req.params.userId}, '${req.body.date}', ${req.body.id_przepisu} )`
         );
@@ -54,6 +69,21 @@ module.exports = function (app: Express) {
 
   app.get("/api/mealplanner/:userId/:dayFrom/:dayTo", bodyParser.json(), async (req: any, res) => {
       try {
+          {
+              if (req.session == null || req.session.user == null || req.session.authenticated == false) {
+                  res.status(401).json({response: "User session is not valid!"});
+                  return;
+              }
+
+              const result = await pool.query(
+                  "SELECT id_uzytkownika FROM public.uzytkownik WHERE email = $1",
+                  [req.session.user]
+              );
+              if (result.rowCount != 1 || req.params.userId != result.rows[0].id_uzytkownika) {
+                  res.status(401).json({response: "User session is not valid!"});
+                  return;
+              }
+          }
         //let result: any[] = []
         const result = await pool.query(
           `SELECT plan.id_przepisu, przepis.tytul, plan.data FROM plan JOIN przepis on plan.id_przepisu = przepis.id_przepisu WHERE plan.id_uzytkownika = ${req.params.userId} AND plan.data BETWEEN '${req.params.dayFrom}' AND '${req.params.dayTo}'`
@@ -83,6 +113,21 @@ module.exports = function (app: Express) {
 
   app.delete("/api/mealplanner/:userId", bodyParser.json(), async (req: any, res) => {
     try {
+        {
+            if (req.session == null || req.session.user == null || req.session.authenticated == false) {
+                res.status(401).json({response: "User session is not valid!"});
+                return;
+            }
+
+            const result = await pool.query(
+                "SELECT id_uzytkownika FROM public.uzytkownik WHERE email = $1",
+                [req.session.user]
+            );
+            if (result.rowCount != 1 || req.params.userId != result.rows[0].id_uzytkownika) {
+                res.status(401).json({response: "User session is not valid!"});
+                return;
+            }
+        }
        console.log(req.body.id_przepisu, req.body.date, req.params.userId )
        const result = await pool.query(
         `DELETE FROM plan WHERE id_uzytkownika = ${req.params.userId} and id_przepisu = ${req.body.id_przepisu} and data = '${req.body.date}'`)

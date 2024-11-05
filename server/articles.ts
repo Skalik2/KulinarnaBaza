@@ -35,6 +35,20 @@ module.exports = function (app: Express) {
   app.post(
     "/api/articles/:userId", bodyParser.json(), async (req: any, res) => {
       try {
+        if (req.session == null || req.session.user == null || req.session.authenticated == false) {
+          res.status(401).json({ response: "User session is not valid!" });
+          return;
+        }
+        {
+          const result = await pool.query(
+              "SELECT id_uzytkownika FROM public.uzytkownik WHERE email = $1",
+              [req.session.user]
+          );
+          if (result.rowCount != 1 || req.params.userId != result.rows[0].id_uzytkownika){
+            res.status(401).json({ response: "User session is not valid!" });
+            return;
+          }
+        }
         let id = await pool.query(`SELECT max(id_artykulu) FROM artykul`);
         id = id.rows[0].max + 1;
         if (id == null) {
@@ -163,6 +177,29 @@ module.exports = function (app: Express) {
 
   app.delete("/api/articles/:articleId", bodyParser.json(), async (req: any, res) => {
     try {
+      if (req.session == null || req.session.user == null || req.session.authenticated == false) {
+        res.status(401).json({ response: "User session is not valid!" });
+        return;
+      }
+      {
+        const result = await pool.query(
+            "SELECT id_uzytkownika FROM public.uzytkownik WHERE email = $1",
+            [req.session.user]
+        );
+        if (result.rowCount != 1){
+          res.status(401).json({ response: "User session is not valid!" });
+          return;
+        }
+        // new check if the article actually belongs to this person
+        const articleCheck = await pool.query(
+            "SELECT * FROM public.artykul WHERE id_artykulu = $1",
+            [req.params.articleId]
+        );
+        if (articleCheck.rowCount != 1 || articleCheck.rows[0].autor != result.rows[0].id_uzytkownika){
+          res.status(401).json({ response: "User session is not valid!" });
+          return;
+        }
+      }
       await pool.query(
         `DELETE FROM komentarz WHERE id_artykulu = ${req.params.articleId}`
       );
@@ -190,6 +227,25 @@ module.exports = function (app: Express) {
     bodyParser.json(),
     async (req: any, res) => {
       try {
+        {
+          const result = await pool.query(
+              "SELECT id_uzytkownika FROM public.uzytkownik WHERE email = $1",
+              [req.session.user]
+          );
+          if (result.rowCount != 1){
+            res.status(401).json({ response: "User session is not valid!" });
+            return;
+          }
+          // new check if the article actually belongs to this person
+          const articleCheck = await pool.query(
+              "SELECT * FROM public.artykul WHERE id_artykulu = $1",
+              [req.params.articleId]
+          );
+          if (articleCheck.rowCount != 1 || articleCheck.rows[0].autor != result.rows[0].id_uzytkownika){
+            res.status(401).json({ response: "User session is not valid!" });
+            return;
+          }
+        }
         await pool.query(
           `UPDATE artykul SET tytul = '${req.body.tytul}', opis = '${req.body.opis}' WHERE id_artykulu = ${req.params.articleId}`
         );

@@ -34,6 +34,20 @@ module.exports = function (app: Express) {
 
   app.post("/api/recipes/:userId", bodyParser.json(), async (req: any, res) => {
     try {
+      if (req.session == null || req.session.user == null || req.session.authenticated == false) {
+        res.status(401).json({ response: "User session is not valid!" });
+        return;
+      }
+      {
+        const result = await pool.query(
+            "SELECT id_uzytkownika FROM public.uzytkownik WHERE email = $1",
+            [req.session.user]
+        );
+        if (result.rowCount != 1 || req.params.userId != result.rows[0].id_uzytkownika){
+          res.status(401).json({ response: "User session is not valid!" });
+          return;
+        }
+      }
       let id = await pool.query(`SELECT max(id_przepisu) FROM przepis`);
       console.log(id);
       id = id.rows[0].max + 1;
@@ -153,6 +167,20 @@ module.exports = function (app: Express) {
     bodyParser.json(),
     async (req: any, res) => {
       try {
+        {
+          if (req.session == null || req.session.user == null || req.session.authenticated == false) {
+            res.status(401).json({ response: "User session is not valid!" });
+            return;
+          }
+          const result = await pool.query(
+              "SELECT id_uzytkownika FROM public.uzytkownik WHERE email = $1",
+              [req.session.user]
+          );
+          if (result.rowCount != 1 || req.params.userId != result.rows[0].id_uzytkownika){
+            res.status(401).json({ response: "User session is not valid!" });
+            return;
+          }
+        }
         const valid = await pool.query(
           `SELECT * FROM przepis WHERE id_przepisu = ${req.params.recipeId}`
         );
@@ -183,6 +211,28 @@ module.exports = function (app: Express) {
     bodyParser.json(),
     async (req: any, res) => {
       try {
+        if (req.session == null || req.session.user == null || req.session.authenticated == false) {
+          res.status(401).json({ response: "User session is not valid!" });
+          return;
+        }
+        {
+          const result = await pool.query(
+              "SELECT id_uzytkownika FROM public.uzytkownik WHERE email = $1",
+              [req.session.user]
+          );
+          if (result.rowCount != 1){
+            res.status(401).json({ response: "User session is not valid!" });
+            return;
+          }
+          const fav = await pool.query(
+              "SELECT * FROM public.ulubione WHERE id_uzytkownika = $1 AND id_przepisu = $2",
+              [req.params.userId, req.params.recipeId]
+          );
+          if (fav.rowCount != 1){
+            res.status(401).json({ response: "Invalid favourite/user combination!" });
+            return;
+          }
+        }
         await pool.query(
           `DELETE FROM ulubione WHERE id_uzytkownika = ${req.params.userId} and id_przepisu = ${req.params.recipeId}`
         );
@@ -310,6 +360,24 @@ module.exports = function (app: Express) {
     bodyParser.json(),
     async (req: any, res) => {
       try {
+        {
+          const result = await pool.query(
+              "SELECT id_uzytkownika FROM public.uzytkownik WHERE email = $1",
+              [req.session.user]
+          );
+          if (result.rowCount != 1){
+            res.status(401).json({ response: "User session is not valid!" });
+            return;
+          }
+          const rec = await pool.query(
+              "SELECT * FROM public.przepis WHERE id_przepisu = $1",
+              [req.params.recipeId]
+          );
+          if (rec.rowCount != 1 || rec.rows[0].autor != result.rows[0].id_uzytkownika){
+            res.status(401).json({ response: "Recipe does not exist or belong to the user!" });
+            return;
+          }
+        }
         await pool.query(
           `UPDATE przepis SET tytul = '${req.body.tytul}', opis = '${req.body.opis}', czas_przygotowania = ${req.body.czas_przygotowania}, cena = ${req.body.cena} WHERE id_przepisu = ${req.params.recipeId}`
         );
@@ -363,6 +431,24 @@ module.exports = function (app: Express) {
 
   app.delete("/api/recipes/:recipeId", bodyParser.json(), async (req: any, res) => {
     try {
+      {
+        const result = await pool.query(
+            "SELECT id_uzytkownika FROM public.uzytkownik WHERE email = $1",
+            [req.session.user]
+        );
+        if (result.rowCount != 1){
+          res.status(401).json({ response: "User session is not valid!" });
+          return;
+        }
+        const rec = await pool.query(
+            "SELECT * FROM public.przepis WHERE id_przepisu = $1",
+            [req.params.recipeId]
+        );
+        if (rec.rowCount != 1 || rec.rows[0].autor != result.rows[0].id_uzytkownika){
+          res.status(401).json({ response: "Recipe does not exist or belong to the user!" });
+          return;
+        }
+      }
       await pool.query(
         `DELETE FROM ulubione WHERE id_przepisu = ${req.params.recipeId}`
       );

@@ -46,7 +46,7 @@ module.exports = function(app : Express) {
             console.log("Logged in successfully!")
             req.session.user = email;
             req.session.authenticated = true;
-            res.status(201).json( {"response": "Logged in successfully!"} );
+            res.status(200).json( {"response": "Logged in successfully!"} );
 
         }
         catch (err) {
@@ -87,7 +87,7 @@ module.exports = function(app : Express) {
             req.session.destroy()
             req.session = null;
             console.log("Logged out!");
-            res.status(201).json( {"response": "Logged out successfully!"} );
+            res.status(200).json( {"response": "Logged out successfully!"} );
         }
         catch (err) {
             console.error("Error when logging out:", err);
