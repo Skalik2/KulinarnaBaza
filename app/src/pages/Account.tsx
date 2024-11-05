@@ -25,6 +25,7 @@ export default function Account() {
           "http://localhost:5000/api/user/changePassword",
           {
             password: data.newPassword,
+            oldPassword: data.oldPassword
           },
           {
             withCredentials: true,
