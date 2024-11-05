@@ -18,7 +18,7 @@ module.exports = function(app : Express) {
             }
             const result = pool.query("UPDATE public.uzytkownik SET email = $1 WHERE id_uzytkownika = $2;", [email, user.rows[0].id_uzytkownika]);
             req.session.user = email
-            res.status(201).json( {"response": "Changed email successfully!"} );
+            res.status(200).json( {"response": "Changed email successfully!"} );
         }
         catch (err) {
             console.error("Error when changing email:", err);
@@ -40,7 +40,7 @@ module.exports = function(app : Express) {
             }
             const result = pool.query("UPDATE public.uzytkownik SET imie = $1 WHERE id_uzytkownika = $2;", [name, user.rows[0].id_uzytkownika]);
 
-            res.status(201).json( {"response": "Changed name successfully!"} );
+            res.status(200).json( {"response": "Changed name successfully!"} );
         }
         catch (err) {
             console.error("Error when changing name:", err);
@@ -62,7 +62,7 @@ module.exports = function(app : Express) {
             }
             const result = pool.query("UPDATE public.uzytkownik SET nazwisko = $1 WHERE id_uzytkownika = $2;", [lastName, user.rows[0].id_uzytkownika]);
 
-            res.status(201).json( {"response": "Changed last name successfully!"} );
+            res.status(200).json( {"response": "Changed last name successfully!"} );
         }
         catch (err) {
             console.error("Error when changing last name:", err);
@@ -90,7 +90,7 @@ module.exports = function(app : Express) {
             const hpass = await hashPassword(password);
             const result = pool.query("UPDATE public.uzytkownik SET haslo = $1 WHERE id_uzytkownika = $2;", [hpass, user.rows[0].id_uzytkownika]);
 
-            res.status(201).json( {"response": "Changed password successfully!"} );
+            res.status(200).json( {"response": "Changed password successfully!"} );
         }
         catch (err) {
             console.error("Error when changing password:", err);
