@@ -15,7 +15,7 @@ const MealPlannerCard = ({ userId, meal, data }: RecipeComponent) => {
   const queryClient = useQueryClient();
   const { data: recipeData, isLoading } = useGetRecipe(meal.id_przepisu);
   let formattedDate = new Date(data);
-  formattedDate.setDate(formattedDate.getDate() + 1);
+  formattedDate.setDate(formattedDate.getDate());
   const dateToSend = formattedDate.getFullYear() + "-" + ((formattedDate.getMonth()+1 <= 9) ? "0" : "" ) + (formattedDate.getMonth()+1) + "-" + ((formattedDate.getDate() <= 9) ? "0" : "" )+ formattedDate.getDate();
   function handleClick() {
     fetch(`http://localhost:5000/api/mealplanner/${userId}`, {
@@ -30,7 +30,6 @@ const MealPlannerCard = ({ userId, meal, data }: RecipeComponent) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         queryClient.invalidateQueries({ queryKey: ["mealplanner", userId] });
         toast.success("Przepis usunięty z planu dnia!");
       });
@@ -41,7 +40,6 @@ const MealPlannerCard = ({ userId, meal, data }: RecipeComponent) => {
       <Spinner />
     </div>
   }
-  console.log(recipeData?.przepis[0])
   return (
     <div className="border-2 border-[rgb(255,48,0)] rounded-lg">
       <div className="filter hover:saturate-150">

@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Days from "../ui/mealPlanner/days";
 import MealPlannerCard from "../ui/mealPlanner/mealPlannerCard";
-import { useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetPlannerMeals } from "../hooks/useGetPlannerMeals";
 import Spinner from "../ui/Spinner";
 
 export default function MealPlanner() {
-  const params = useParams();
   const queryClient = useQueryClient();
 
   const user = queryClient.getQueryData<{ id_uzytkownika: string }>(["user"]);
@@ -19,13 +17,11 @@ export default function MealPlanner() {
   let tempDateFromStringToday = today.getFullYear() + "-" + ((today.getMonth()+1 <= 9) ? "0" : "" ) + (today.getMonth()+1) + "-" + ((today.getDate() <= 9) ? "0" : "" ) + today.getDate();
   let tempDateToStringToday = todayAfterWeek.getFullYear() + "-" + ((todayAfterWeek.getMonth()+1 <= 9) ? "0" : "" ) + (todayAfterWeek.getMonth()+1) + "-" + ((todayAfterWeek.getDate() <= 9) ? "0" : "" ) + todayAfterWeek.getDate();
 
-  console.log("dzisiaj",tempDateFromStringToday, tempDateToStringToday);
   const [dayFrom, setdayFrom] = useState(tempDateFromStringToday);
   const [dayTo, setdayTo] = useState(tempDateToStringToday);
   const { data: recipeData, isLoading, refetch, isRefetching, isRefetchError } = useGetPlannerMeals(userId, dayFrom, dayTo);
 
-  const handleWeekChange = (weekData: any) => {
-    console.log("strzalka")
+  const handleWeekChange = useCallback((weekData: any) => {
     let tempDateFrom = new Date(weekData[0]?.dateThisWeek?.toISOString().split('T')[0]);
     let tempDateTo = new Date(weekData[6]?.dateThisWeek?.toISOString().split('T')[0]);
     tempDateFrom.setDate(tempDateFrom.getDate() + 1);
@@ -35,8 +31,8 @@ export default function MealPlanner() {
     setdayFrom(tempDateFromString);
     setdayTo(tempDateToString);
     queryClient.invalidateQueries({ queryKey: ["mealplanner", userId] });
-  };
-  
+  }, [queryClient, userId]);
+
   const [data, setData] = useState(null);
 
   useEffect(() => {

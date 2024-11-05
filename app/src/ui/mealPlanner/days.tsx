@@ -7,20 +7,19 @@ interface Day {
 }
 
 const useWeek = () => {
-  const getWeek = (offset: number = 0): number => {
-    const date: Date = new Date();
-    const firstDay: any = new Date(date.getFullYear(), 0, 1);
-    const today: any = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    const dayOfYear: number = ((today - firstDay as unknown as number) / 86400000) + 1;
-    return Math.ceil((dayOfYear + (offset * 7)) / 7);
+  const getCurrentWeekStart = (offset = 0): Date => {
+    const today = new Date();
+    const currentDay = today.getDay();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - (currentDay === 0 ? 6 : currentDay - 1) + offset * 7);
+    return startOfWeek;
   };
 
-  const getDayInWeek = (day: number, weekOffset: number): Date => {
-    const date: Date = new Date();
-    const firstDay: Date = new Date(date.getFullYear(), 0, 1);
-    const daysToAdd: number = (getWeek(weekOffset) * 7) + day - firstDay.getDay();
-    firstDay.setDate(firstDay.getDate() + daysToAdd);
-    return firstDay;
+  const getDayInWeek = (dayOffset: number, weekOffset: number): Date => {
+    const startOfWeek = getCurrentWeekStart(weekOffset);
+    const day = new Date(startOfWeek);
+    day.setDate(startOfWeek.getDate() + dayOffset);
+    return day;
   };
 
   const [weekOffset, setWeekOffset] = useState<number>(0);
@@ -28,13 +27,13 @@ const useWeek = () => {
 
   useEffect(() => {
     setWeek([
-      { day: 'Poniedziałek', initial: 'P', dateThisWeek: getDayInWeek(1, weekOffset) },
-      { day: 'Wtorek', initial: 'W', dateThisWeek: getDayInWeek(2, weekOffset) },
-      { day: 'Środa', initial: 'Ś', dateThisWeek: getDayInWeek(3, weekOffset) },
-      { day: 'Czwartek', initial: 'C', dateThisWeek: getDayInWeek(4, weekOffset) },
-      { day: 'Piątek', initial: 'P', dateThisWeek: getDayInWeek(5, weekOffset) },
-      { day: 'Sobota', initial: 'S', dateThisWeek: getDayInWeek(6, weekOffset) },
-      { day: 'Niedziela', initial: 'N', dateThisWeek: getDayInWeek(7, weekOffset) },
+      { day: 'Poniedziałek', initial: 'P', dateThisWeek: getDayInWeek(0, weekOffset) },
+      { day: 'Wtorek', initial: 'W', dateThisWeek: getDayInWeek(1, weekOffset) },
+      { day: 'Środa', initial: 'Ś', dateThisWeek: getDayInWeek(2, weekOffset) },
+      { day: 'Czwartek', initial: 'C', dateThisWeek: getDayInWeek(3, weekOffset) },
+      { day: 'Piątek', initial: 'P', dateThisWeek: getDayInWeek(4, weekOffset) },
+      { day: 'Sobota', initial: 'S', dateThisWeek: getDayInWeek(5, weekOffset) },
+      { day: 'Niedziela', initial: 'N', dateThisWeek: getDayInWeek(6, weekOffset) },
     ]);
   }, [weekOffset]);
 
